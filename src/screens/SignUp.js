@@ -5,7 +5,7 @@ import FormBox from '../components/auth/FormBox';
 import BottomBox from '../components/auth/BottomBox';
 import routes from '../routes';
 import styled from 'styled-components';
-import { FatLink, Title } from '../components/shared';
+import { ErrorBox, FatLink, Title } from '../components/shared';
 import PageTitle from '../components/PageTitle';
 import { useForm } from 'react-hook-form';
 import FormError from '../components/auth/FormError';
@@ -54,6 +54,7 @@ function SignUp() {
   const navigate = useNavigate();
   const {
     register,
+    watch,
     handleSubmit,
     errors,
     formState,
@@ -63,23 +64,25 @@ function SignUp() {
   } = useForm({
     mode: 'onChange',
   });
+  console.log(watch());
   const onCompleted = (data) => {
     const {
       createAccount: { ok, error },
     } = data;
-    console.log(ok, error);
     if (!ok) {
-      console.log(ok, error);
+      console.log(error);
       setError('result', {
         message: error,
       });
+      setErrorMessage(error);
+    } else {
+      navigate(routes.home, {
+        state: {
+          message: 'Account created. Please log in!',
+          username: getValues().username,
+        },
+      });
     }
-    navigate(routes.home, {
-      state: {
-        message: 'Account created. Please log in!',
-        username: getValues().username,
-      },
-    });
   };
   const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
     onCompleted,
@@ -95,7 +98,7 @@ function SignUp() {
     });
   };
 
-  const clearLoginError = () => {
+  const clearError = () => {
     clearErrors('result');
   };
 
@@ -107,6 +110,7 @@ function SignUp() {
           <Title>Nomad Coffee</Title>
           <Subtitle>Sign up to see coffee shops in Korea!</Subtitle>
         </HeaderContainer>
+        <ErrorBox>{errorMessage !== '' ? errorMessage : null}</ErrorBox>
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <FormError message={errors?.name?.message} />
           <Input
@@ -117,7 +121,7 @@ function SignUp() {
                 message: 'Name should be longer than 3 chars.',
               },
             })}
-            onChange={clearLoginError}
+            onChange={clearError}
             name="name"
             type="text"
             placeholder="Name"
@@ -125,13 +129,13 @@ function SignUp() {
           <FormError message={errors?.username?.message} />
           <Input
             ref={register({
-              required: 'username is required.',
+              required: 'Username is required.',
               minLength: {
                 value: 3,
                 message: 'Username should be longer than 3 chars.',
               },
             })}
-            onChange={clearLoginError}
+            onChange={clearError}
             name="username"
             type="text"
             placeholder="Username"
@@ -141,7 +145,7 @@ function SignUp() {
             ref={register({
               required: 'Email is required.',
             })}
-            onChange={clearLoginError}
+            onChange={clearError}
             name="email"
             type="text"
             placeholder="Email"
@@ -151,7 +155,7 @@ function SignUp() {
             ref={register({
               required: 'Location is required.',
             })}
-            onChange={clearLoginError}
+            onChange={clearError}
             name="location"
             type="text"
             placeholder="Location"
@@ -161,7 +165,7 @@ function SignUp() {
             ref={register({
               required: 'Githubusername is required.',
             })}
-            onChange={clearLoginError}
+            onChange={clearError}
             name="githubUsername"
             type="text"
             placeholder="Github Username"
@@ -175,7 +179,7 @@ function SignUp() {
                 message: 'Password should be longer than 5 chars.',
               },
             })}
-            onChange={clearLoginError}
+            onChange={clearError}
             name="password"
             type="password"
             placeholder="Password"

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const SFormError = styled.span`
   color: tomato;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 15px;
 `;
 
 function FormError({ message }) {

@@ -15,3 +15,10 @@ export const Title = styled.span`
   font-weight: 800;
   font-size: 20px;
 `;
+
+export const ErrorBox = styled.span`
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 15px;
+  color: tomato;
+`;
