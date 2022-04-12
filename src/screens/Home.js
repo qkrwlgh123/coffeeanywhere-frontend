@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import { isLoggedInvar, darkModeVar } from '../apollo';
+import { isLoggedInvar, darkModeVar, logUserOut } from '../apollo';
+import { useNavigate } from 'react-router-dom';
+import routes from '../routes';
 
 const Title = styled.h1`
   color: ${(props) => props.theme.fontColor};
@@ -10,12 +12,19 @@ const Container = styled.div`
 `;
 
 function Home() {
+  const navigate = useNavigate();
   return (
     <Container>
-      <Title>Home</Title>
-      <button onClick={() => isLoggedInvar(false)}>Log out!</button>
-      <button onClick={() => darkModeVar((current) => !current)}>
-        Change to Dark mode
+      <Title>Welcome! YOu did it!</Title>
+      <button
+        onClick={() => (
+          logUserOut(),
+          navigate(routes.home, {
+            replace: true,
+          })
+        )}
+      >
+        Log out!
       </button>
     </Container>
   );
