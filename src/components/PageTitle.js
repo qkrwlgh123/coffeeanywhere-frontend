@@ -4,7 +4,7 @@ import { PropTypes } from 'prop-types';
 function PageTitle({ title }) {
   return (
     <Helmet>
-      <title>{title} | Instaclone</title>
+      <title>{title} | Nomad Coffee</title>
     </Helmet>
   );
 }

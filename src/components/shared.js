@@ -14,6 +14,7 @@ export const FatLink = styled.span`
 export const Title = styled.span`
   font-weight: 800;
   font-size: 20px;
+  margin: 10px 0;
 `;
 
 export const ErrorBox = styled.span`

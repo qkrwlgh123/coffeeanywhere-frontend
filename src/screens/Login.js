@@ -59,7 +59,6 @@ function Login() {
     const {
       login: { ok, token, error },
     } = data;
-    console.log(ok, error, token);
     if (!ok) {
       setError('result', {
         message: error,
@@ -114,10 +113,10 @@ function Login() {
           <FormError message={errors?.password?.message} />
           <Input
             ref={register({
-              required: 'Paasword is required.',
+              required: 'Password is required.',
               minLength: {
                 value: 5,
-                message: 'Password sholud be longer than 5 chars.',
+                message: 'Password should be longer than 5 chars.',
               },
             })}
             onChange={onClearErrors}

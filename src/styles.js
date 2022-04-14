@@ -29,6 +29,18 @@ export const GlobalStyles = createGlobalStyle`
         color: ${(props) => props.theme.fontColor};
     }
     a {
+        text-decoration: none;
+  
+        opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+      }
+    a:visited {
+      color:${(props) => props.theme.accent};
       text-decoration: none;
+    }
+    img {
+      width:180px;
+      height:180px;
+      margin-right:10px;
+      border-radius:10px;
     }
 `;

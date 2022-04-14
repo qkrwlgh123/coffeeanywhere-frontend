@@ -12,7 +12,6 @@ import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Notification from '../components/auth/Notification';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -64,7 +63,7 @@ function SignUp() {
   } = useForm({
     mode: 'onChange',
   });
-  console.log(watch());
+
   const onCompleted = (data) => {
     const {
       createAccount: { ok, error },

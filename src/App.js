@@ -9,6 +9,9 @@ import { darkTheme, lightTheme, GlobalStyles } from './styles';
 import SignUp from './screens/SignUp';
 import routes from './routes';
 import { HelmetProvider } from 'react-helmet-async';
+import CreateShop from './screens/CreateShop';
+import ShopInfo from './screens/ShopInfo';
+import EditShop from './screens/EditShop';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInvar);
@@ -28,7 +31,37 @@ function App() {
                 path={routes.signUp}
                 element={!isLoggedIn ? <SignUp /> : null}
               ></Route>
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route
+                path={routes.createShop}
+                element={
+                  isLoggedIn ? (
+                    <CreateShop />
+                  ) : (
+                    <Navigate to={routes.home} replace />
+                  )
+                }
+              ></Route>
+              <Route
+                path={routes.shopInfo}
+                element={
+                  isLoggedIn ? (
+                    <ShopInfo />
+                  ) : (
+                    <Navigate to={routes.home} replace />
+                  )
+                }
+              ></Route>
+              <Route
+                path={routes.editShop}
+                element={
+                  isLoggedIn ? (
+                    <EditShop />
+                  ) : (
+                    <Navigate to={routes.home} replace />
+                  )
+                }
+              ></Route>
+              <Route path="*" element={<Navigate to={routes.home} replace />} />
             </Routes>
           </Router>
         </ThemeProvider>
