@@ -40,7 +40,10 @@ const httpLink = createHttpLink({
       : 'http://localhost.4000/graphql',
 });
 const uploadLink = createUploadLink({
-  uri: 'http://localhost:4000/graphql',
+  uri:
+    process.env.NODE_ENV === 'production'
+      ? 'https://nomadcoffee-backend-jiho.herokuapp.com/graphql'
+      : 'http://localhost.4000/graphql',
 });
 
 export const client = new ApolloClient({
