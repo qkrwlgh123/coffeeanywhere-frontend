@@ -1,6 +1,7 @@
 import {
   ApolloClient,
   ApolloLink,
+  createHttpLink,
   InMemoryCache,
   makeVar,
 } from '@apollo/client';
@@ -32,12 +33,18 @@ export const disableDarkMode = () => {
   darkModeVar(false);
 };
 
+const httpLink = createHttpLink({
+  uri:
+    process.env.NODE_ENV === 'production'
+      ? 'https://nomadcoffee-backend-jiho.herokuapp.com/graphql'
+      : 'http://localhost.4000/graphql',
+});
 const uploadLink = createUploadLink({
   uri: 'http://localhost:4000/graphql',
 });
 
 export const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: ApolloLink.from([httpLink]),
   cache: new InMemoryCache(),
   link: ApolloLink.from([uploadLink]),
 });
