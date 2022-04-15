@@ -23,6 +23,7 @@ import { HomeBox } from './Home';
 const SubmitBtn = styled(Button)`
   width: 80px;
   border-radius: 5px;
+  cursor: pointer;
 `;
 
 const SHOP_QUERY = gql`
