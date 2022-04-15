@@ -6,6 +6,7 @@ import { BaseBox, FatLink, Title } from '../components/shared';
 import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import Button from '../components/auth/Button';
+import PageTitle from '../components/PageTitle';
 
 export const HomeBox = styled(BaseBox)`
   display: flex;
@@ -66,6 +67,7 @@ function Home() {
 
   return (
     <HomeLayout>
+      <PageTitle title="My list" />
       <HomeBox>
         <Title>MY Coffee Shop List</Title>
         {list?.seeMyShopList.length > 0 ? (

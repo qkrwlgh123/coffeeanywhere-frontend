@@ -9,6 +9,7 @@ import Button from '../components/auth/Button';
 import FormBox from '../components/auth/FormBox';
 import Input from '../components/auth/input';
 import Notification from '../components/auth/Notification';
+import PageTitle from '../components/PageTitle';
 import { BaseBox, Title } from '../components/shared';
 import HomeLayout from '../components/shop/HomeLayout';
 import routes from '../routes';
@@ -103,6 +104,7 @@ function EditShop() {
   };
   return (
     <HomeLayout>
+      <PageTitle title={`${list?.name}`} />
       <FormBox>
         <Title>{list?.name}</Title>
         <Notification message={message} />

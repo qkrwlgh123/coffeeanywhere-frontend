@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { TOKEN } from '../apollo';
 import Button from '../components/auth/Button';
 import Notification from '../components/auth/Notification';
+import PageTitle from '../components/PageTitle';
 import { BaseBox, Title } from '../components/shared';
 import HomeLayout from '../components/shop/HomeLayout';
 import routes from '../routes';
@@ -142,6 +143,7 @@ function ShopInfo() {
 
   return (
     <HomeLayout>
+      <PageTitle title={`${list?.name}`} />
       <Notification message={message} />
       {message === '' ? (
         <InfoBox>
