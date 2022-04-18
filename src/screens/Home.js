@@ -7,27 +7,65 @@ import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import Button from '../components/auth/Button';
 import PageTitle from '../components/PageTitle';
+import { History } from 'history';
+import { useEffect, useState } from 'react';
 
 export const HomeBox = styled(BaseBox)`
   display: flex;
   flex-direction: column;
+  margin-top: 5%;
   align-items: center;
-  padding: 15px 0;
+  padding: 15px;
+  width: 80%;
+  height: 80%;
+  border: none;
 `;
 
-const MyList = styled.ul`
+const Shops = styled.div`
+  display: grid;
+  /* Media Query for Laptops and Desktops */
+  @media (min-width: 1025px) {
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+  }
+  /* Media Query for Tablet */
+  @media (min-width: 651px) and (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+  }
+  /* Media Query for Mobile */
+  @media (max-width: 650px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+`;
+
+const CoffeeShop = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin-top: 30px;
+  align-items: center;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  width: 100%;
+  height: 100%;
+  max-width: 230px;
+  max-height: 300px;
+  a {
+    color: inherit;
+    margin: 20px 0px;
+    font-size: 20px;
+    :visited {
+      color: inherit;
+    }
+  }
 `;
 
-const MyShop = styled.li`
-  cursor: pointer;
-  margin-bottom: 15px;
-  font-size: 18px;
+const EmptyBox = styled.div`
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
-
 const Addbtn = styled.span`
   font-weight: 600;
   margin-top: 20px;
@@ -49,50 +87,49 @@ const LIST_QUERY = gql`
     seeMyShopList {
       name
       id
+      photos {
+        url
+      }
     }
   }
 `;
 
 function Home() {
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(LIST_QUERY, {
+  const [list, setList] = useState([]);
+
+  const { loading, error, data, refetch } = useQuery(LIST_QUERY, {
     context: {
       headers: {
         token: localStorage.getItem(TOKEN),
       },
     },
+    onCompleted: () => setList(data),
   });
-
-  let list = data;
 
   return (
     <HomeLayout>
       <PageTitle title="My list" />
       <HomeBox>
-        <Title>MY Coffee Shop List</Title>
-        {list?.seeMyShopList.length > 0 ? (
-          <MyList>
+        {list?.seeMyShopList?.length > 0 ? (
+          <Shops>
             {list.seeMyShopList.map((item) => (
-              <Link key={item.id} to={`${item.id}`} reloadDocument>
-                <MyShop key={item.id}>{item.name}</MyShop>
-              </Link>
+              <CoffeeShop key={item.id}>
+                <Link to={`${item.id}`}>{item.name}</Link>
+                {item.photos.length > 0 ? (
+                  <img src={item.photos[0]?.url} />
+                ) : (
+                  <EmptyBox>
+                    <span>Add a photo!</span>
+                  </EmptyBox>
+                )}
+              </CoffeeShop>
             ))}
-            <Link to={routes.createShop}>
-              <Addbtn>Add a Shop!</Addbtn>
-            </Link>
-          </MyList>
-        ) : (
-          <Link to={routes.createShop}>
-            <Addbtn>Add a Shop!</Addbtn>
-          </Link>
-        )}
-        <LogOut
-          type="submit"
-          value="Log out"
-          onClick={() => (
-            logUserOut(), navigate(routes.home, { replace: true })
-          )}
-        />
+          </Shops>
+        ) : null}
+        <Link to={routes.createShop}>
+          <Addbtn>Add a Shop!</Addbtn>
+        </Link>
       </HomeBox>
     </HomeLayout>
   );

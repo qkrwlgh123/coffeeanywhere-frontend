@@ -37,17 +37,22 @@ const httpLink = createHttpLink({
   uri:
     process.env.NODE_ENV === 'production'
       ? 'https://nomadcoffee-backend-jiho.herokuapp.com/graphql'
-      : 'http://localhost.4000/graphql',
+      : 'http://localhost:4000/graphql',
 });
 const uploadLink = createUploadLink({
   uri:
     process.env.NODE_ENV === 'production'
       ? 'https://nomadcoffee-backend-jiho.herokuapp.com/graphql'
-      : 'http://localhost.4000/graphql',
+      : 'http://localhost:4000/graphql',
 });
 
 export const client = new ApolloClient({
   uri: ApolloLink.from([httpLink]),
   cache: new InMemoryCache(),
   link: ApolloLink.from([uploadLink]),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'network-only',
+    },
+  },
 });

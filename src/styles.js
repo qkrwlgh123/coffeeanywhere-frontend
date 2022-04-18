@@ -18,6 +18,7 @@ export const GlobalStyles = createGlobalStyle`
     input {
       all:unset;
     }
+
     * {
       box-sizing:border-box ;
     }
@@ -30,7 +31,6 @@ export const GlobalStyles = createGlobalStyle`
     }
     a {
         text-decoration: none;
-  
         opacity: ${(props) => (props.disabled ? 0.3 : 1)};
       }
     a:visited {
@@ -38,9 +38,7 @@ export const GlobalStyles = createGlobalStyle`
       text-decoration: none;
     }
     img {
-      width:180px;
-      height:180px;
-      margin-right:10px;
-      border-radius:10px;
+      width:200px;
+      height:230px;
     }
 `;
