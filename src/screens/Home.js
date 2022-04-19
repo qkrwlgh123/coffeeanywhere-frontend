@@ -45,8 +45,9 @@ const Shop = styled.div`
   padding: 10px;
   border-radius: 10px;
   a {
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 16px;
+    font-weight: 400;
     text-decoration: none;
     color: inherit;
     :visited {
@@ -109,7 +110,6 @@ function Home() {
                     <span key={item.id}>Add a Photo!</span>
                   </EmptyPhoto>
                 )}
-
                 <Link to={`/${item.id}`}>{item.name}</Link>
               </Shop>
             ))}

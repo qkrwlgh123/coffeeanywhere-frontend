@@ -28,7 +28,7 @@ const TitleBox = styled.div`
 const Name = styled.span`
   width: 33%;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
 `;
 
 const Addr = styled.span`
