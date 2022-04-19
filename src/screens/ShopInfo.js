@@ -1,57 +1,97 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TOKEN } from '../apollo';
-import Button from '../components/auth/Button';
 import Notification from '../components/auth/Notification';
 import PageTitle from '../components/PageTitle';
-import { BaseBox, Title } from '../components/shared';
-import HomeLayout from '../components/shop/HomeLayout';
+import InfoLayout from '../components/shop/InfoLayout';
 import routes from '../routes';
-import { HomeBox, LogOut } from './Home';
 
 const { kakao } = window;
 
-const InfoBox = styled(HomeBox)`
-  width: 1500px;
+const InfoBox = styled.div`
+  margin-top: 5%;
+  width: 80%;
+
+  padding: 15px;
+  background-color: #ffffff;
+  justify-content: none;
 `;
 
-export const EditBtn = styled.div`
-  margin-top: 15px;
-  border: 1px solid ${(props) => props.theme.accent};
-  background-color: ${(props) => props.theme.accent};
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  width: 80px;
-  height: 25px;
-  border-radius: 5px;
+const TitleBox = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
-  opacity: ${(props) => (props.disabled ? 0 : 1)};
-  cursor: ${(props) => (props.disabled ? 'progress' : 'pointer')};
-  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
+  align-items: center;
+  width: 100%;
+`;
+
+const Name = styled.span`
+  width: 33%;
+  font-size: 1.5rem;
+  font-weight: 700;
 `;
 
 const Addr = styled.span`
+  display: flex;
+  justify-content: center;
   font-weight: 500;
-  font-size: 15px;
-  margin-top: 20px;
+  font-size: 16px;
+  width: 33%;
 `;
 
-const HashtagBox = styled.span`
-  margin-top: 20px;
+const Buttons = styled.div`
+  display: flex;
+  width: 33%;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 16px;
+  a {
+    color: inherit;
+    text-decoration: none;
+    margin-right: 10px;
+    :visited {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
   span {
-    margin-right: 5px;
+    cursor: pointer;
   }
 `;
 
-const PhotoBox = styled.div`
+const HashtagBox = styled.div`
+  margin-top: 35px;
+  margin-left: 20px;
   display: flex;
-  justify-content: center;
+  div {
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-right: 10px;
+    background-color: #e5e7eb;
+  }
+`;
+
+const PhotoList = styled.div`
+  margin-top: 35px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 5px;
+`;
+
+const PhotoBox = styled.div`
+  background-color: #e5e7eb;
+  width: 90%;
+  height: 30vh;
+  padding: 12px;
+  border-radius: 10px;
+`;
+
+const Photoimg = styled.img`
+  width: 100%;
+  height: 100%;
 `;
 
 const SHOP_QUERY = gql`
@@ -143,39 +183,44 @@ function ShopInfo() {
   const space = address[0]?.address.address_name;
 
   return (
-    <HomeLayout>
+    <InfoLayout>
       <PageTitle title={`${list?.name}`} />
       <Notification message={message} />
       {message === '' ? (
         <InfoBox>
-          <Title>{list?.name}</Title>
-          <Notification message={message} />
-          <PhotoBox>
-            {photos.length > 0 ? (
-              photos.map((item) => <img key={item.url} src={item.url} />)
-            ) : (
-              <span>Add a photos!</span>
-            )}
-          </PhotoBox>
-          <Addr>{space ? space : null}</Addr>
+          <TitleBox>
+            <Name>{list?.name}</Name>
+            <Addr>{space ? space : null}</Addr>
+            <Buttons>
+              <Link to={`/shop/${id}`} reloadDocument>
+                <span disabled={message !== ''}>Edit</span>
+              </Link>
+              <span onClick={handleDeleteShop} disabled={message !== ''}>
+                Delete
+              </span>
+            </Buttons>
+          </TitleBox>
           <HashtagBox>
             {categories.length !== 0 ? (
-              categories.map((item) => <span key={item.name}>{item.name}</span>)
+              categories.map((item) => <div key={item.name}>{item.name}</div>)
             ) : (
               <span>no hash tags</span>
             )}
           </HashtagBox>
-          <div>
-            <Link to={`/shop/${id}`} reloadDocument>
-              <EditBtn disabled={message !== ''}>Edit</EditBtn>
-            </Link>
-            <EditBtn onClick={handleDeleteShop} disabled={message !== ''}>
-              Delete
-            </EditBtn>
-          </div>
+          <PhotoList>
+            {photos.length > 0 ? (
+              photos.map((item) => (
+                <PhotoBox>
+                  <Photoimg key={item.url} src={item.url} />
+                </PhotoBox>
+              ))
+            ) : (
+              <span>Add a photos!</span>
+            )}
+          </PhotoList>
         </InfoBox>
       ) : null}
-    </HomeLayout>
+    </InfoLayout>
   );
 }
 export default ShopInfo;

@@ -3,7 +3,7 @@ import reset from 'styled-reset';
 
 export const lightTheme = {
   accent: '#0095f6',
-  bgColor: '#FAFAFA',
+  bgColor: '#F3F4F6',
   fontColor: 'rgb(38,38,38)',
   borderColor: 'rgb(219,219,219)',
 };
@@ -26,7 +26,7 @@ export const GlobalStyles = createGlobalStyle`
     body {
         background-color:${(props) => props.theme.bgColor};
         font-size:14px;
-        font-family: 'Open Sans', sans-serif;
+        font-family: sans-serif;
         color: ${(props) => props.theme.fontColor};
     }
     a {
@@ -36,9 +36,5 @@ export const GlobalStyles = createGlobalStyle`
     a:visited {
       color:${(props) => props.theme.accent};
       text-decoration: none;
-    }
-    img {
-      width:200px;
-      height:230px;
     }
 `;

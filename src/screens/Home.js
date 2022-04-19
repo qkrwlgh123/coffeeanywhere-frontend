@@ -1,14 +1,14 @@
-import { logUserOut, TOKEN } from '../apollo';
-import { Link, useNavigate } from 'react-router-dom';
+import { TOKEN } from '../apollo';
+import { Link } from 'react-router-dom';
 import routes from '../routes';
 import HomeLayout from '../components/shop/HomeLayout';
-import { BaseBox, FatLink, Title } from '../components/shared';
+import { BaseBox } from '../components/shared';
 import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
-import Button from '../components/auth/Button';
+
 import PageTitle from '../components/PageTitle';
-import { History } from 'history';
-import { useEffect, useState } from 'react';
+
+import { useState } from 'react';
 
 export const HomeBox = styled(BaseBox)`
   display: flex;
@@ -66,21 +66,6 @@ const EmptyBox = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const Addbtn = styled.span`
-  font-weight: 600;
-  margin-top: 20px;
-`;
-
-export const LogOut = styled(Button)`
-  width: 80px;
-  height: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-`;
 
 const LIST_QUERY = gql`
   query seeMyShopList {
@@ -95,10 +80,9 @@ const LIST_QUERY = gql`
 `;
 
 function Home() {
-  const navigate = useNavigate();
   const [list, setList] = useState([]);
 
-  const { loading, error, data, refetch } = useQuery(LIST_QUERY, {
+  const { data } = useQuery(LIST_QUERY, {
     context: {
       headers: {
         token: localStorage.getItem(TOKEN),
@@ -110,27 +94,6 @@ function Home() {
   return (
     <HomeLayout>
       <PageTitle title="My list" />
-      <HomeBox>
-        {list?.seeMyShopList?.length > 0 ? (
-          <Shops>
-            {list.seeMyShopList.map((item) => (
-              <CoffeeShop key={item.id}>
-                <Link to={`${item.id}`}>{item.name}</Link>
-                {item.photos.length > 0 ? (
-                  <img src={item.photos[0]?.url} />
-                ) : (
-                  <EmptyBox>
-                    <span>Add a photo!</span>
-                  </EmptyBox>
-                )}
-              </CoffeeShop>
-            ))}
-          </Shops>
-        ) : null}
-        <Link to={routes.createShop}>
-          <Addbtn>Add a Shop!</Addbtn>
-        </Link>
-      </HomeBox>
     </HomeLayout>
   );
 }
