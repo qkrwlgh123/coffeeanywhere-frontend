@@ -13,7 +13,6 @@ const { kakao } = window;
 const InfoBox = styled.div`
   margin-top: 5%;
   width: 80%;
-
   padding: 15px;
   background-color: #ffffff;
   justify-content: none;

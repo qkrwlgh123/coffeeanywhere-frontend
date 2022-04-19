@@ -3,14 +3,16 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  height: 150vh;
+  align-items: center;
+  height: 100vh;
 `;
 
 const Wrapper = styled.div`
   display: flex;
+  justify-content: center;
+  border: 1px solid black;
   width: 100%;
   max-width: 1300px;
-  justify-content: center;
 `;
 function HomeLayout({ children }) {
   return (

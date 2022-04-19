@@ -1,31 +1,26 @@
 import { TOKEN } from '../apollo';
 import { Link } from 'react-router-dom';
 import routes from '../routes';
-import HomeLayout from '../components/shop/HomeLayout';
-import { BaseBox } from '../components/shared';
 import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
-
 import PageTitle from '../components/PageTitle';
-
 import { useState } from 'react';
+import InfoLayout from '../components/shop/InfoLayout';
 
-export const HomeBox = styled(BaseBox)`
+const ListBox = styled.div`
   display: flex;
-  flex-direction: column;
-  margin-top: 5%;
-  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  width: 75%;
+  margin-top: 10%;
   padding: 15px;
-  width: 80%;
-  height: 80%;
-  border: none;
 `;
 
 const Shops = styled.div`
   display: grid;
   /* Media Query for Laptops and Desktops */
   @media (min-width: 1025px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
   }
   /* Media Query for Tablet */
@@ -40,31 +35,39 @@ const Shops = styled.div`
   }
 `;
 
-const CoffeeShop = styled.div`
+const Shop = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid ${(props) => props.theme.borderColor};
-  width: 100%;
-  height: 100%;
-  max-width: 230px;
-  max-height: 300px;
+  background-color: #e5e7eb;
+  width: 20vw;
+  height: 25vh;
+  padding: 10px;
+  border-radius: 10px;
   a {
+    margin-top: 10px;
+    font-size: 16px;
+    text-decoration: none;
     color: inherit;
-    margin: 20px 0px;
-    font-size: 20px;
     :visited {
+      text-decoration: none;
       color: inherit;
     }
   }
 `;
 
-const EmptyBox = styled.div`
-  width: 200px;
-  height: 200px;
+const Img = styled.img`
+  width: 100%;
+  height: 80%;
+`;
+
+const EmptyPhoto = styled.div`
+  border: 0.5px dotted black;
+  width: 100%;
+  height: 80%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 `;
 
 const LIST_QUERY = gql`
@@ -92,9 +95,30 @@ function Home() {
   });
 
   return (
-    <HomeLayout>
+    <InfoLayout>
       <PageTitle title="My list" />
-    </HomeLayout>
+      <ListBox>
+        {list?.seeMyShopList?.length > 0 ? (
+          <Shops>
+            {list.seeMyShopList.map((item) => (
+              <Shop key={item.id}>
+                {item.photos.length > 0 ? (
+                  <Img src={item.photos[0].url} />
+                ) : (
+                  <EmptyPhoto>
+                    <span key={item.id}>Add a Photo!</span>
+                  </EmptyPhoto>
+                )}
+
+                <Link to={`/${item.id}`}>{item.name}</Link>
+              </Shop>
+            ))}
+          </Shops>
+        ) : (
+          <span>Add a Shop!</span>
+        )}
+      </ListBox>
+    </InfoLayout>
   );
 }
 export default Home;
