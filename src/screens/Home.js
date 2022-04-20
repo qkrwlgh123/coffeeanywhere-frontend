@@ -11,9 +11,9 @@ const ListBox = styled.div`
   display: flex;
   justify-content: center;
   background-color: #ffffff;
-  width: 75%;
+  width: 90%;
   margin-top: 10%;
-  padding: 15px;
+  padding: 30px 15px;
 `;
 
 const Shops = styled.div`

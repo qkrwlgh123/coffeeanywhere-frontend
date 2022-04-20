@@ -15,7 +15,6 @@ const Container = styled(BaseBox)`
     display: flex;
     justify-items: center;
     flex-direction: column;
-    align-items: center;
   }
 `;
 

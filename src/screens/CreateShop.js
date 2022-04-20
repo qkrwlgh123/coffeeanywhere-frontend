@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Button from '../components/auth/Button';
 import { useForm } from 'react-hook-form';
-import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
 import { TOKEN } from '../apollo';
 import { useNavigate } from 'react-router-dom';
@@ -19,14 +18,6 @@ const { kakao } = window;
 
 const CreateTitle = styled(Title)`
   margin-bottom: 15px;
-`;
-
-const Message = styled.span`
-  margin-top: 5px;
-  font-weight: 600;
-`;
-export const DescribeInput = styled(Input)`
-  height: 70px;
 `;
 
 export const ListBox = styled.div`
@@ -45,6 +36,19 @@ const Address = styled.span`
   font-size: 10px;
   cursor: not-allowed;
   pointer-events: none;
+`;
+
+const InputHashtagsBox = styled.div`
+  display: flex;
+  align-items: center;
+  span {
+    margin: 0px 5px;
+  }
+`;
+
+export const DescribeInput = styled(Input)`
+  width: 150px;
+  height: 30px;
 `;
 
 const CREATE_SHOP_MUTATION = gql`
@@ -70,6 +74,19 @@ const CREATE_SHOP_MUTATION = gql`
 
 function CreateShop() {
   const navigate = useNavigate();
+  const [hashTagNum, setHashTagNum] = useState(1);
+  const [hashTagArr, setHashTagArr] = useState([hashTagNum]);
+
+  const [maxhashTag, setMaxhashTag] = useState('');
+  const handleHashtagNum = () => {
+    if (hashTagNum < 5) {
+      setHashTagNum((current) => current + 1);
+      setHashTagArr([...hashTagArr, hashTagNum]);
+    } else {
+      setMaxhashTag('Hash tags should be less than 5');
+    }
+  };
+
   const [message, setMessage] = useState('');
   const [place, setPlace] = useState('');
 
@@ -150,9 +167,16 @@ function CreateShop() {
     if (loading) {
       return;
     }
-    const { name, caption, file } = data;
+    let caption = '';
+    for (let i = 1; i <= 5; i++) {
+      if (data[i] !== undefined) {
+        caption = caption + `#${data[i]}`;
+      }
+    }
+
+    const { name, file } = data;
     const { latitude, longitude } = sendData;
-    console.log(name, caption, file, latitude, longitude);
+
     createShop({
       variables: {
         name,
@@ -164,7 +188,7 @@ function CreateShop() {
     });
   };
 
-  const { register, handleSubmit, errors, formState } = useForm({
+  const { register, watch, handleSubmit, errors, formState } = useForm({
     mode: 'onChange',
   });
 
@@ -204,19 +228,19 @@ function CreateShop() {
                 </ShopList>
               </ListBox>
             ) : null}
-            <FormError message={errors?.caption?.message} />
-            <DescribeInput
-              ref={register({
-                required: 'Describtion is required.',
-                minLength: {
-                  value: 2,
-                  message: 'Describtion should be longer than 2 chars.',
-                },
-              })}
-              name="caption"
-              type="text"
-              placeholder="Describe about a shop with Hash tag(#)"
-            />
+            {hashTagArr.map((item, index) => (
+              <InputHashtagsBox key={index}>
+                <span>#</span>
+                <DescribeInput
+                  ref={register}
+                  name={`${index + 1}`}
+                  type="text"
+                  placeholder="type a hash tag"
+                />
+              </InputHashtagsBox>
+            ))}
+            <Notification message={maxhashTag} />
+            <span onClick={handleHashtagNum}>add a hash tag</span>
             <Input
               ref={register}
               name="file"
