@@ -2,24 +2,23 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100vh;
 `;
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: 700px;
   width: 100%;
-  max-width: 1300px;
 `;
 
-function InfoLayout({ children }) {
+function CreateLayout({ children }) {
   return (
     <Container>
       <Wrapper>{children}</Wrapper>
     </Container>
   );
 }
-export default InfoLayout;
+
+export default CreateLayout;

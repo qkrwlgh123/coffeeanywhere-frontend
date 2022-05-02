@@ -16,10 +16,6 @@ import routes from '../routes';
 import { DescribeInput } from './CreateShop';
 import { HomeBox } from './Home';
 
-// < Send a caption to back-end >
-
-// < Send a file to back-end >
-
 const SubmitBtn = styled(Button)`
   width: 80px;
   border-radius: 5px;

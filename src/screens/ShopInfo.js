@@ -93,6 +93,11 @@ const Photoimg = styled.img`
   height: 100%;
 `;
 
+export const Message = styled.span`
+  position: absolute;
+  top: 45%;
+`;
+
 const SHOP_QUERY = gql`
   query seeCoffeeShop($id: Int!) {
     seeCoffeeShop(id: $id) {
@@ -151,7 +156,7 @@ function ShopInfo() {
 
   const [deleteShop, { loading }] = useMutation(DELETE_SHOP, {
     onCompleted: () => {
-      setMessage('Successfully deleted. After a while, you will back to list.');
+      setMessage('삭제되었습니다.');
       setTimeout(() => navigate(routes.home, { replace: true }), 1000);
     },
   });
@@ -184,7 +189,6 @@ function ShopInfo() {
   return (
     <InfoLayout>
       <PageTitle title={`${list?.name}`} />
-      <Notification message={message} />
       {message === '' ? (
         <InfoBox>
           <TitleBox>
@@ -218,7 +222,9 @@ function ShopInfo() {
             )}
           </PhotoList>
         </InfoBox>
-      ) : null}
+      ) : (
+        <Message>{message}</Message>
+      )}
     </InfoLayout>
   );
 }

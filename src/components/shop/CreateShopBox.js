@@ -8,6 +8,7 @@ const Container = styled(BaseBox)`
   flex-direction: column;
   padding: 35px 40px 25px 40px;
   margin-bottom: 10px;
+  border: none;
   form {
     margin-top: 35px;
     width: 100%;
@@ -18,7 +19,7 @@ const Container = styled(BaseBox)`
   }
 `;
 
-function FormBox({ children }) {
+function CreateShopBox({ children }) {
   return <Container>{children}</Container>;
 }
-export default FormBox;
+export default CreateShopBox;
