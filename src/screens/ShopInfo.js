@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TOKEN } from '../apollo';
-import Notification from '../components/auth/Notification';
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import routes from '../routes';
@@ -213,7 +212,7 @@ function ShopInfo() {
           <PhotoList>
             {photos.length > 0 ? (
               photos.map((item) => (
-                <PhotoBox>
+                <PhotoBox key={item.url}>
                   <Photoimg key={item.url} src={item.url} />
                 </PhotoBox>
               ))

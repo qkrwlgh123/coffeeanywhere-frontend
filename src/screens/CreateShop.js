@@ -286,10 +286,8 @@ function CreateShop() {
         caption = caption + `#${data[i]}`;
       }
     }
-
     const { file } = data;
     const { name, latitude, longitude } = sendData;
-
     createShop({
       variables: {
         name,
