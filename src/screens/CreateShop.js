@@ -117,7 +117,7 @@ export const DescribeInput = styled(Input)`
   height: 30px;
 `;
 
-const UploadBox = styled.div`
+export const UploadBox = styled.div`
   display: flex;
   width: 50%;
   label {
@@ -148,7 +148,7 @@ const UploadName = styled.input`
   }
 `;
 
-const FileUpload = styled.input`
+export const FileUpload = styled.input`
   position: absolute;
   width: 0;
   height: 0;

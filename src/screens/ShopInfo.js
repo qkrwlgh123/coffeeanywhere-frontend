@@ -195,10 +195,10 @@ function ShopInfo() {
             <Addr>{space ? space : null}</Addr>
             <Buttons>
               <Link to={`/shop/${id}`} reloadDocument>
-                <span disabled={message !== ''}>Edit</span>
+                <span disabled={message !== ''}>편집</span>
               </Link>
               <span onClick={handleDeleteShop} disabled={message !== ''}>
-                Delete
+                삭제
               </span>
             </Buttons>
           </TitleBox>

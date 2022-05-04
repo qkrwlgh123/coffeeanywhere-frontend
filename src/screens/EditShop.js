@@ -8,6 +8,7 @@ import { TOKEN } from '../apollo';
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import routes from '../routes';
+import { FileUpload, UploadBox } from './CreateShop';
 
 const { kakao } = window;
 
@@ -63,22 +64,37 @@ const HashtagBox = styled.div`
   margin-top: 35px;
   margin-left: 20px;
   display: flex;
+`;
+
+const Hasgtag = styled.div`
+  display: flex;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 10px;
+  background-color: #e5e7eb;
+  span:first-child {
+    margin-right: 7px;
+  }
   div {
-    border-radius: 5px;
-    padding: 10px;
-    font-weight: 600;
-    font-size: 16px;
-    margin-right: 10px;
-    background-color: #e5e7eb;
+    cursor: pointer;
+    svg {
+      pointer-events: none;
+    }
   }
 `;
 
 const HasgtagInputBox = styled.div`
   display: flex;
-  align-items: center;
-  width: 19%;
+  border-radius: 5px;
+  padding: 10px;
   font-weight: 600;
   font-size: 16px;
+  margin-right: 10px;
+  background-color: #e5e7eb;
+  align-items: center;
+  width: 19%;
   span {
     margin-right: 2px;
   }
@@ -134,6 +150,14 @@ const Photoimg = styled.img`
   height: 100%;
 `;
 
+const AddPhoto = styled.div`
+  label {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+  }
+`;
+
 export const Message = styled.span`
   position: absolute;
   top: 45%;
@@ -173,6 +197,15 @@ const ADD_HASHTAG = gql`
 const DELETE_HASHTAG = gql`
   mutation deleteCategory($id: Int) {
     deleteCategory(id: $id) {
+      ok
+      error
+    }
+  }
+`;
+
+const ADD_PHOTO = gql`
+  mutation addPhoto($id: Int, $file: Upload) {
+    addPhoto(id: $id, file: $file) {
       ok
       error
     }
@@ -232,10 +265,29 @@ function EditShop() {
   };
 
   const handleDeleteCategory = (event) => {
+    event.stopPropagation();
     const params = event.target.getAttribute('params');
     deleteCategory({
       variables: {
         id: Number(params),
+      },
+    });
+  };
+
+  const [addPhoto] = useMutation(ADD_PHOTO, {
+    context: {
+      headers: {
+        token: localStorage.getItem(TOKEN),
+      },
+    },
+    onCompleted: () => refetch(),
+  });
+
+  const addPhotoHandler = (event) => {
+    addPhoto({
+      variables: {
+        id: Number(id),
+        file: event.target.files[0],
       },
     });
   };
@@ -292,17 +344,17 @@ function EditShop() {
           <HashtagBox>
             {categories.length !== 0
               ? categories.map((item) => (
-                  <div key={item.name}>
-                    {item.name}
-                    <FontAwesomeIcon
-                      icon={faX}
-                      color="gray"
-                      size="xs"
-                      cursor="pointer"
-                      params={item.id}
-                      onClick={handleDeleteCategory}
-                    />
-                  </div>
+                  <Hasgtag key={item.name}>
+                    <span>{item.name}</span>
+                    <div params={item.id} onClick={handleDeleteCategory}>
+                      <FontAwesomeIcon
+                        params={item.id}
+                        icon={faX}
+                        color="gray"
+                        size="xs"
+                      />
+                    </div>
+                  </Hasgtag>
                 ))
               : null}
             {categories?.length < 5 ? (
@@ -317,21 +369,30 @@ function EditShop() {
               </HasgtagInputBox>
             ) : null}
           </HashtagBox>
+          <ErrorBox>
+            <ErrorMessage>사진은 4장까지 등록 가능합니다.</ErrorMessage>
+          </ErrorBox>
           <PhotoList>
-            {photos.length > 0 ? (
-              photos.map((item) => (
-                <PhotoBox key={item.url}>
-                  <Photoimg src={item.url} />
-                </PhotoBox>
-              ))
-            ) : (
-              <span>Add a photos!</span>
-            )}
-            <PhotoBox>
-              <div>
-                <span>사진 추가</span>
-              </div>
-            </PhotoBox>
+            {photos.length > 0
+              ? photos.map((item) => (
+                  <PhotoBox key={item.id}>
+                    <Photoimg src={item.url} />
+                  </PhotoBox>
+                ))
+              : null}
+            {photos.length < 4 ? (
+              <PhotoBox>
+                <AddPhoto>
+                  <label htmlFor="file">사진 추가</label>
+                  <FileUpload
+                    id="file"
+                    type="file"
+                    accept="image/*"
+                    onChange={addPhotoHandler}
+                  />
+                </AddPhoto>
+              </PhotoBox>
+            ) : null}
           </PhotoList>
         </InfoBox>
       ) : (
