@@ -4,7 +4,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
 `;
 
 const Wrapper = styled.div`
@@ -12,7 +11,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1500px;
 `;
 
 function InfoLayout({ children }) {

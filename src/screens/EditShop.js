@@ -127,20 +127,22 @@ const PhotoList = styled.div`
 `;
 
 const PhotoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   background-color: #e5e7eb;
   width: 90%;
   height: 30vh;
   padding: 12px;
   border-radius: 10px;
   div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    span {
-      cursor: pointer;
-      font-size: 16px;
+    cursor: pointer;
+    color: black;
+    width: 10px;
+    margin-right: 9px;
+    margin-bottom: 9px;
+    svg {
+      pointer-events: none;
     }
   }
 `;
@@ -206,6 +208,15 @@ const DELETE_HASHTAG = gql`
 const ADD_PHOTO = gql`
   mutation addPhoto($id: Int, $file: Upload) {
     addPhoto(id: $id, file: $file) {
+      ok
+      error
+    }
+  }
+`;
+
+const DELETE_PHOTO = gql`
+  mutation deletePhoto($id: Int) {
+    deletePhoto(id: $id) {
       ok
       error
     }
@@ -283,11 +294,25 @@ function EditShop() {
     onCompleted: () => refetch(),
   });
 
+  const [deletePhoto] = useMutation(DELETE_PHOTO, {
+    onCompleted: () => refetch(),
+  });
+
   const addPhotoHandler = (event) => {
     addPhoto({
       variables: {
         id: Number(id),
         file: event.target.files[0],
+      },
+    });
+  };
+
+  const handleDeletePhoto = (event) => {
+    event.stopPropagation();
+    const params = event.target.getAttribute('params');
+    deletePhoto({
+      variables: {
+        id: Number(params),
       },
     });
   };
@@ -376,6 +401,15 @@ function EditShop() {
             {photos.length > 0
               ? photos.map((item) => (
                   <PhotoBox key={item.id}>
+                    <div params={item.id} onClick={handleDeletePhoto}>
+                      <FontAwesomeIcon
+                        params={item.id}
+                        icon={faX}
+                        color="gray"
+                        size="1x"
+                      />
+                    </div>
+
                     <Photoimg src={item.url} />
                   </PhotoBox>
                 ))
