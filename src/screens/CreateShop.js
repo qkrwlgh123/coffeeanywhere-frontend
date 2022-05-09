@@ -26,7 +26,7 @@ const CreateTitle = styled.span`
 
 const CreateInput = styled.input`
   width: 50%;
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 10px;
   background-color: #fafafa;
   border: 0.5px solid rgb(219, 219, 219);
@@ -52,6 +52,24 @@ export const ShopList = styled.ul``;
 export const ShopName = styled.li`
   font-size: 18px;
   margin: 10px 0px;
+`;
+
+export const DescribeInput = styled.input`
+  width: 90%;
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #fafafa;
+  border: 0.5px solid rgb(219, 219, 219);
+  box-sizing: border-box;
+  font-size: 18px;
+  opacity: ${(props) => (props.disabled ? 0.4 : 1)};
+  &::placeholder {
+    font-size: 18px;
+  }
+  :focus {
+    border: 3px solid rgb(219, 219, 219);
+  }
 `;
 
 const Address = styled.span`
@@ -87,7 +105,7 @@ const InputHashtagsBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 40px 0px;
+  margin: 20px 0px;
   span:last-child {
     margin-top: 20px;
     cursor: pointer;
@@ -110,11 +128,6 @@ const InputHashtags = styled.div`
     font-size: 18px;
     margin: 0px 5px;
   }
-`;
-
-export const DescribeInput = styled(Input)`
-  width: 150px;
-  height: 30px;
 `;
 
 export const UploadBox = styled.div`
@@ -163,6 +176,7 @@ const CREATE_SHOP_MUTATION = gql`
     $caption: String
     $longitude: String
     $latitude: String
+    $description: String
     $file: Upload
   ) {
     createShop(
@@ -170,6 +184,7 @@ const CREATE_SHOP_MUTATION = gql`
       caption: $caption
       longitude: $longitude
       latitude: $latitude
+      description: $description
       file: $file
     ) {
       ok
@@ -286,7 +301,7 @@ function CreateShop() {
         caption = caption + `#${data[i]}`;
       }
     }
-    const { file } = data;
+    const { file, description } = data;
     const { name, latitude, longitude } = sendData;
     createShop({
       variables: {
@@ -294,6 +309,7 @@ function CreateShop() {
         caption,
         longitude,
         latitude,
+        description,
         file: file[0],
       },
     });
@@ -360,6 +376,7 @@ function CreateShop() {
                 />
               </SelectedShop>
             )}
+
             <InputHashtagsBox>
               {hashTagArr.map((item, index) => (
                 <InputHashtags key={index}>
@@ -390,6 +407,12 @@ function CreateShop() {
                 accept="image/*"
               />
             </UploadBox>
+            <DescribeInput
+              ref={register}
+              name="description"
+              type="text"
+              placeholder="설명 작성"
+            />
             {message === '' ? (
               <Button
                 type="submit"

@@ -8,7 +8,7 @@ import { TOKEN } from '../apollo';
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import routes from '../routes';
-import { FileUpload, UploadBox } from './CreateShop';
+import { DescribeInput, FileUpload, UploadBox } from './CreateShop';
 
 const { kakao } = window;
 
@@ -62,7 +62,7 @@ const Buttons = styled.div`
 
 const HashtagBox = styled.div`
   margin-top: 35px;
-  margin-left: 20px;
+  margin-left: 10px;
   display: flex;
 `;
 
@@ -104,15 +104,23 @@ const HasgtagInput = styled.input`
   width: 100%;
 `;
 
+const DescribeInputBox = styled.div`
+  span {
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 10px;
+    background-color: ${(props) => props.theme.accent};
+    color: white;
+    cursor: pointer;
+  }
+`;
+
 const ErrorBox = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 5px;
   margin-bottom: -19px;
-`;
-
-const EmptyBox = styled.div`
-  width: 0%;
 `;
 
 const ErrorMessage = styled.span`
@@ -174,6 +182,7 @@ const SHOP_QUERY = gql`
         name
         longitude
         latitude
+        description
         photos {
           id
           url
@@ -205,6 +214,15 @@ const DELETE_HASHTAG = gql`
   }
 `;
 
+const EDIT_DESCRIPTION = gql`
+  mutation editDescription($id: Int!, $description: String) {
+    editDescription(id: $id, description: $description) {
+      ok
+      error
+    }
+  }
+`;
+
 const ADD_PHOTO = gql`
   mutation addPhoto($id: Int, $file: Upload) {
     addPhoto(id: $id, file: $file) {
@@ -230,6 +248,7 @@ function EditShop() {
     '해쉬태그는 5개까지 입력이 가능합니다'
   );
   const [hashInput, setHashInput] = useState('');
+  const [descriptionInput, setDescriptionInput] = useState('');
   const [list, setList] = useState([]);
   const [address, setAddress] = useState([]);
   const [photos, setPhotos] = useState([]);
@@ -250,6 +269,7 @@ function EditShop() {
         setPhotos(data.seeCoffeeShop.shop.photos);
         setCategories(data.seeCoffeeShop.shop.categories);
         searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
+        setDescriptionInput(data?.seeCoffeeShop?.shop?.description);
       }
     },
   });
@@ -281,6 +301,26 @@ function EditShop() {
     deleteCategory({
       variables: {
         id: Number(params),
+      },
+    });
+  };
+
+  const [editDescription] = useMutation(EDIT_DESCRIPTION, {
+    onCompleted: () => {
+      setDescriptionInput('');
+      refetch();
+    },
+  });
+
+  const handleEditDescription = (event) => {
+    setDescriptionInput(event.target.value);
+  };
+
+  const submitEdittedDescription = () => {
+    editDescription({
+      variables: {
+        id: Number(id),
+        description: descriptionInput,
       },
     });
   };
@@ -394,6 +434,15 @@ function EditShop() {
               </HasgtagInputBox>
             ) : null}
           </HashtagBox>
+          <DescribeInputBox>
+            <DescribeInput
+              value={descriptionInput}
+              onChange={handleEditDescription}
+              placeholder="설명 작성"
+            />
+            <span onClick={submitEdittedDescription}>수정</span>
+          </DescribeInputBox>
+
           <ErrorBox>
             <ErrorMessage>사진은 4장까지 등록 가능합니다.</ErrorMessage>
           </ErrorBox>

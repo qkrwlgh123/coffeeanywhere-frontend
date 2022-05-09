@@ -60,7 +60,7 @@ const Buttons = styled.div`
 
 const HashtagBox = styled.div`
   margin-top: 35px;
-  margin-left: 20px;
+  margin-left: 10px;
   display: flex;
   div {
     border-radius: 5px;
@@ -70,6 +70,12 @@ const HashtagBox = styled.div`
     margin-right: 10px;
     background-color: #e5e7eb;
   }
+`;
+
+const DescriptionBox = styled.div`
+  margin-top: 35px;
+  font-size: 18px;
+  font-weight: 500;
 `;
 
 const PhotoList = styled.div`
@@ -106,6 +112,7 @@ const SHOP_QUERY = gql`
         name
         longitude
         latitude
+        description
         photos {
           url
         }
@@ -131,6 +138,7 @@ function ShopInfo() {
   const [message, setMessage] = useState('');
   const [list, setList] = useState([]);
   const [address, setAddress] = useState([]);
+  const [description, setDescription] = useState('한줄평을 추가하세요');
   const [photos, setPhotos] = useState([]);
   const [categories, setCategories] = useState([]);
   const { id } = useParams();
@@ -148,6 +156,7 @@ function ShopInfo() {
         setList(data.seeCoffeeShop.shop);
         setPhotos(data.seeCoffeeShop.shop.photos);
         setCategories(data.seeCoffeeShop.shop.categories);
+        setDescription(data.seeCoffeeShop.shop.description);
         searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
       }
     },
@@ -206,9 +215,10 @@ function ShopInfo() {
             {categories.length !== 0 ? (
               categories.map((item) => <div key={item.name}>{item.name}</div>)
             ) : (
-              <span>no hash tags</span>
+              <span>작성된 해쉬태그가 없습니다</span>
             )}
           </HashtagBox>
+          <DescriptionBox>{description}</DescriptionBox>
           <PhotoList>
             {photos.length > 0 ? (
               photos.map((item) => (
@@ -217,7 +227,7 @@ function ShopInfo() {
                 </PhotoBox>
               ))
             ) : (
-              <span>Add a photos!</span>
+              <span>첨부된 사진이 없습니다</span>
             )}
           </PhotoList>
         </InfoBox>
