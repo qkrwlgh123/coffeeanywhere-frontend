@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import { TOKEN } from '../apollo';
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
-import routes from '../routes';
-import { DescribeInput, FileUpload, UploadBox } from './CreateShop';
+
+import { DescribeInput, FileUpload } from './CreateShop';
 
 const { kakao } = window;
 
@@ -105,6 +105,11 @@ const HasgtagInput = styled.input`
 `;
 
 const DescribeInputBox = styled.div`
+  @media (max-width: 800px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   span {
     font-size: 18px;
     padding: 10px;
@@ -113,6 +118,10 @@ const DescribeInputBox = styled.div`
     background-color: ${(props) => props.theme.accent};
     color: white;
     cursor: pointer;
+    @media (max-width: 800px) {
+      text-align: center;
+      width: 15%;
+    }
   }
 `;
 
@@ -132,17 +141,21 @@ const PhotoList = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 5px;
+  @media (max-width: 800px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const PhotoBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  background-color: #e5e7eb;
+
   width: 90%;
   height: 30vh;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 5px;
+
   div {
     cursor: pointer;
     color: black;
@@ -157,10 +170,17 @@ const PhotoBox = styled.div`
 
 const Photoimg = styled.img`
   width: 100%;
-  height: 100%;
+  height: 90%;
 `;
 
 const AddPhoto = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e5e7eb;
+  width: 90%;
+  height: 30vh;
+  border-radius: 15px;
   label {
     cursor: pointer;
     font-weight: 500;
@@ -374,14 +394,14 @@ function EditShop() {
     onCompleted: () => refetch(),
   });
 
-  // 주소-좌표 변환 객체를 생성합니다
+  // 주소-좌표 변환 객체를 생성
   const geocoder = new kakao.maps.services.Geocoder();
 
   function searchDetailAddrFromCoords(coords, callback) {
-    // 좌표로 법정동 상세 주소 정보를 요청합니다
+    // 좌표로 법정동 상세 주소 정보를 요청
     geocoder.coord2Address(coords.longitude, coords.latitude, callback);
   }
-  //  좌표에 대한 주소정보를 표출하는 함수입니다
+  // 좌표에 대한 주소정보를 표출하는 함수
   function Info(result, status) {
     if (status === kakao.maps.services.Status.OK) {
       setAddress(result);
@@ -464,17 +484,15 @@ function EditShop() {
                 ))
               : null}
             {photos.length < 4 ? (
-              <PhotoBox>
-                <AddPhoto>
-                  <label htmlFor="file">사진 추가</label>
-                  <FileUpload
-                    id="file"
-                    type="file"
-                    accept="image/*"
-                    onChange={addPhotoHandler}
-                  />
-                </AddPhoto>
-              </PhotoBox>
+              <AddPhoto>
+                <label htmlFor="file">사진 추가</label>
+                <FileUpload
+                  id="file"
+                  type="file"
+                  accept="image/*"
+                  onChange={addPhotoHandler}
+                />
+              </AddPhoto>
             ) : null}
           </PhotoList>
         </InfoBox>
