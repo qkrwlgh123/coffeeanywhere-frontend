@@ -68,9 +68,9 @@ const InfoContainer = styled.div`
 
 const MapContainer = styled.div`
   margin-top: 35px;
-  width: 50%;
-  height: 35vh;
-  border-radius: 20px;
+  width: 40%;
+  height: 40vh;
+  border-radius: 15px;
   @media (max-width: 800px) {
     width: 100%;
     height: 50vh;

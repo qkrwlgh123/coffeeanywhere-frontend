@@ -12,6 +12,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import CreateShop from './screens/CreateShop';
 import ShopInfo from './screens/ShopInfo';
 import EditShop from './screens/EditShop';
+import PublicList from './screens/PublicList';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInvar);
@@ -61,6 +62,7 @@ function App() {
                   )
                 }
               ></Route>
+              <Route path={routes.publiclist} element={<PublicList />}></Route>
               <Route path="*" element={<Navigate to={routes.home} replace />} />
             </Routes>
           </Router>

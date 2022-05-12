@@ -2,13 +2,13 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TOKEN } from '../apollo';
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
-
 import { DescribeInput, FileUpload } from './CreateShop';
+import radioImg from '../radioImg.png';
 
 const { kakao } = window;
 
@@ -24,6 +24,25 @@ const TitleBox = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+`;
+
+const OpenBox = styled.div`
+  label {
+    font-size: 16px;
+  }
+  span {
+    cursor: pointer;
+  }
+`;
+
+const OpenTrue = styled.img`
+  border: ${(props) => (props.open ? '7px solid black' : 'none')};
+  border-radius: 100px;
+`;
+
+const OpenFalse = styled.img`
+  border: ${(props) => (!props.open ? '7px solid black' : 'none')};
+  border-radius: 100px;
 `;
 
 const Name = styled.span`
@@ -203,6 +222,7 @@ const SHOP_QUERY = gql`
         longitude
         latitude
         description
+        open
         photos {
           id
           url
@@ -212,6 +232,15 @@ const SHOP_QUERY = gql`
           name
         }
       }
+    }
+  }
+`;
+
+const EDIT_OPEN = gql`
+  mutation editOpen($id: Int!, $open: Boolean) {
+    editOpen(id: $id, open: $open) {
+      ok
+      error
     }
   }
 `;
@@ -262,11 +291,13 @@ const DELETE_PHOTO = gql`
 `;
 
 function EditShop() {
-  const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(
     '해쉬태그는 5개까지 입력이 가능합니다'
   );
+  const [open, setOpen] = useState('');
+  const [openMessage, setOpenMessage] = useState('');
+
   const [hashInput, setHashInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
   const [list, setList] = useState([]);
@@ -290,9 +321,34 @@ function EditShop() {
         setCategories(data.seeCoffeeShop.shop.categories);
         searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
         setDescriptionInput(data?.seeCoffeeShop?.shop?.description);
+        setOpen(data.seeCoffeeShop.shop.open);
       }
     },
   });
+
+  const [editOpen] = useMutation(EDIT_OPEN, { onCompleted: () => refetch() });
+
+  const handleOpen = () => {
+    if (open === data?.seeCoffeeShop?.shop.open) {
+      setOpenMessage('설정이 변경되지 않았습니다');
+    } else if (open) {
+      editOpen({
+        variables: {
+          id: Number(id),
+          open,
+        },
+      });
+      setOpenMessage('해당 콘텐츠가 외부 게시물로 공개됩니다');
+    } else if (!open) {
+      editOpen({
+        variables: {
+          id: Number(id),
+          open,
+        },
+      });
+      setOpenMessage('해당 콘텐츠가 외부에 공개되지 않습니다');
+    }
+  };
 
   const handleHashInput = (event) => {
     setHashInput(event.target.value);
@@ -423,6 +479,33 @@ function EditShop() {
               </Link>
             </Buttons>
           </TitleBox>
+
+          <ErrorMessage>{openMessage}</ErrorMessage>
+          <OpenBox>
+            <label>
+              공개
+              <input type="radio" />
+              <OpenTrue
+                open={open}
+                onClick={() => setOpen(true)}
+                src={radioImg}
+                style={{ width: '13px' }}
+              />
+            </label>
+            <label>
+              비공개
+              <input type="radio" />
+              <OpenFalse
+                open={open}
+                onClick={() => setOpen(false)}
+                src={radioImg}
+                style={{ width: '13px' }}
+              />
+            </label>
+            <span open={open} onClick={handleOpen}>
+              변경
+            </span>
+          </OpenBox>
           <ErrorBox>
             <ErrorMessage>{errorMessage}</ErrorMessage>
           </ErrorBox>
