@@ -15,7 +15,7 @@ import { useLocation } from 'react-router-dom';
 import Notification from '../components/auth/Notification';
 import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
-import { logUserIn } from '../apollo';
+import { loggedId, logUserIn } from '../apollo';
 import { useState } from 'react';
 
 const FacebookLogin = styled.div`
@@ -30,6 +30,7 @@ const LOGIN_MUTATION = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       ok
+      name
       token
       error
     }
@@ -57,7 +58,7 @@ function Login() {
   });
   const onCompleted = (data) => {
     const {
-      login: { ok, token, error },
+      login: { ok, name, token, error },
     } = data;
     if (!ok) {
       setError('result', {
@@ -66,7 +67,7 @@ function Login() {
       setErrorMessage(error);
     }
     if (token) {
-      logUserIn(token);
+      logUserIn(token, name);
     }
   };
   const [login, { loading }] = useMutation(LOGIN_MUTATION, { onCompleted });

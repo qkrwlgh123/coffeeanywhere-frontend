@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -7,6 +7,7 @@ import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import MapScript from '../components/shop/MapScript';
 import routes from '../routes';
+import { DescribeInput } from './CreateShop';
 
 const { kakao } = window;
 
@@ -45,6 +46,7 @@ const Buttons = styled.div`
   justify-content: flex-end;
   align-items: center;
   font-size: 18px;
+  visibility: ${(props) => (props.isMe ? 'visible' : 'hidden')};
   a {
     color: inherit;
     text-decoration: none;
@@ -118,6 +120,65 @@ const PhotoList = styled.div`
   }
 `;
 
+const Line = styled.div`
+  border-top: 1px solid rgb(229, 231, 235);
+  margin-top: 15px;
+  margin-bottom: -25px;
+  color: rgb(75, 88, 99);
+  font-weight: 500;
+  font-size: 17px;
+`;
+
+const ReplyInputBox = styled.div`
+  margin-top: 35px;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ReplyInput = styled.input`
+  width: 90%;
+  height: 80px;
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #fafafa;
+  border: 0.5px solid rgb(219, 219, 219);
+  box-sizing: border-box;
+  font-size: 18px;
+  opacity: ${(props) => (props.disabled ? 0.4 : 1)};
+  &::placeholder {
+    font-size: 18px;
+  }
+  :focus {
+    border: 3px solid rgb(219, 219, 219);
+  }
+`;
+
+const ReplyBtn = styled.input`
+  cursor: pointer;
+  font-weight: 400;
+  text-align: center;
+  width: 5%;
+  padding: 10px 8px;
+  margin: 15px 0px;
+  font-size: 18px;
+  border-radius: 8px;
+  color: ${(props) =>
+    props.disabled ? 'rgb(75, 85, 99)' : 'rgb(229, 231, 235)'};
+  background-color: ${(props) =>
+    props.disabled ? 'rgb(209, 213, 219)' : props.theme.accent};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+`;
+
+const CommentsLength = styled.span`
+  display: block;
+  font-size: 17px;
+  font-weight: 520;
+  margin: 30px 0px;
+`;
+
 const EmptyPhotoBox = styled.div`
   width: 200%;
   text-align: center;
@@ -136,6 +197,27 @@ const Photoimg = styled.img`
   border-radius: 15px;
 `;
 
+const ReplyBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 15px 20px;
+`;
+
+const Reply = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ReplyOwner = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+const ReplyContent = styled.div`
+  font-size: 18px;
+  padding: 25px 0px 40px 0px;
+`;
+
 export const Message = styled.span`
   position: absolute;
   top: 45%;
@@ -151,11 +233,22 @@ const SHOP_QUERY = gql`
         longitude
         latitude
         description
+        user {
+          id
+          username
+        }
         photos {
           url
         }
         categories {
           name
+        }
+        replys {
+          content
+          user {
+            username
+          }
+          createdAt
         }
       }
     }
@@ -171,16 +264,30 @@ const DELETE_SHOP = gql`
   }
 `;
 
+const ADD_REPLY = gql`
+  mutation addReply($id: Int, $content: String) {
+    addReply(id: $id, content: $content) {
+      ok
+      error
+    }
+  }
+`;
+
 function ShopInfo() {
+  const userName = localStorage.getItem('name');
+  const [reply, setReply] = useState('');
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
   const [list, setList] = useState([]);
   const [address, setAddress] = useState([]);
   const [description, setDescription] = useState('한줄평을 추가하세요');
   const [photos, setPhotos] = useState([]);
   const [categories, setCategories] = useState([]);
-  const { id } = useParams();
-  const { data } = useQuery(SHOP_QUERY, {
+  const [replyList, setReplyList] = useState([]);
+
+  const { data, refetch } = useQuery(SHOP_QUERY, {
     variables: {
       id: Number(id),
     },
@@ -194,9 +301,11 @@ function ShopInfo() {
         setList(data.seeCoffeeShop.shop);
         setPhotos(data.seeCoffeeShop.shop.photos);
         setCategories(data.seeCoffeeShop.shop.categories);
+        setReplyList(data.seeCoffeeShop.shop.replys);
         setDescription(data.seeCoffeeShop.shop.description);
         searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
         MapScript(data.seeCoffeeShop.shop);
+        setIsMe(data?.seeCoffeeShop.shop.user.username === userName);
       }
     },
   });
@@ -208,6 +317,18 @@ function ShopInfo() {
     },
   });
 
+  const [addReply] = useMutation(ADD_REPLY, {
+    context: {
+      headers: {
+        token: localStorage.getItem(TOKEN),
+      },
+    },
+    onCompleted: () => {
+      setReply('');
+      refetch();
+    },
+  });
+
   const handleDeleteShop = () => {
     if (loading) {
       return;
@@ -215,6 +336,19 @@ function ShopInfo() {
     deleteShop({
       variables: {
         id: Number(id),
+      },
+    });
+  };
+
+  const handleReply = (event) => {
+    setReply(event.target.value);
+  };
+
+  const submitReply = () => {
+    addReply({
+      variables: {
+        id: Number(id),
+        content: reply,
       },
     });
   };
@@ -241,7 +375,7 @@ function ShopInfo() {
           <TitleBox>
             <Name>{list?.name}</Name>
             <Addr>{space ? space : null}</Addr>
-            <Buttons>
+            <Buttons isMe={isMe}>
               <Link to={`/shop/${id}`} reloadDocument>
                 <span disabled={message !== ''}>편집</span>
               </Link>
@@ -278,6 +412,39 @@ function ShopInfo() {
               </EmptyPhotoBox>
             )}
           </PhotoList>
+          <Line></Line>
+          <ReplyInputBox>
+            <ReplyInput
+              placeholder="댓글 작성"
+              value={reply}
+              onChange={handleReply}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  if (reply.length > 1) {
+                    submitReply();
+                  }
+                }
+              }}
+            />
+            <ReplyBtn
+              disabled={reply.length < 2}
+              onClick={submitReply}
+              value="등록"
+            />
+          </ReplyInputBox>
+          <CommentsLength>댓글 {replyList?.length}</CommentsLength>
+          <ReplyBox>
+            {replyList?.length > 0 ? (
+              replyList.map((item) => (
+                <Reply>
+                  <ReplyOwner>{item.user.username}</ReplyOwner>
+                  <ReplyContent>{item.content}</ReplyContent>
+                </Reply>
+              ))
+            ) : (
+              <span>댓글이 없습니다</span>
+            )}
+          </ReplyBox>
         </InfoBox>
       ) : (
         <Message>{message}</Message>

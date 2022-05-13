@@ -3,12 +3,19 @@ import styled from 'styled-components';
 import { gql, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import ShopForPublic from '../components/shop/ShopForPublic';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  a {
+    color: #212529;
+    :visited {
+      color: #212529;
+    }
+  }
 `;
 
 const FetchMoreBtn = styled.div`
@@ -30,6 +37,7 @@ const FetchMoreBtn = styled.div`
 const LIST_QUERY = gql`
   query seeCoffeeShops($offset: Int) {
     seeCoffeeShops(offset: $offset) {
+      id
       name
       user {
         username
@@ -41,11 +49,15 @@ const LIST_QUERY = gql`
       photos {
         url
       }
+      replys {
+        content
+      }
     }
   }
 `;
 
 function PublicList() {
+  const navigate = useNavigate();
   const [list, setList] = useState([]);
   const { loading, data, fetchMore } = useQuery(LIST_QUERY, {
     variables: {
@@ -80,7 +92,9 @@ function PublicList() {
   return (
     <Layout>
       {list?.map((item, index) => (
-        <ShopForPublic key={index} {...item} />
+        <Link to={`/${item.id}`}>
+          <ShopForPublic key={index} {...item} />
+        </Link>
       ))}
       {loading ? null : (
         <FetchMoreBtn>

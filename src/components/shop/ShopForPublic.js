@@ -1,3 +1,5 @@
+import { faHeart, faPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -34,6 +36,17 @@ const Texts = styled.div`
   margin-left: 80px;
   @media (max-width: 800px) {
     margin-left: 5px;
+  }
+`;
+
+const Icons = styled.div`
+  svg {
+    margin-right: 5px;
+    color: orange;
+  }
+  span {
+    color: rgb(194, 141, 75);
+    margin-right: 5px;
   }
 `;
 
@@ -79,6 +92,12 @@ function ShopForPublic(item) {
       ) : null}
       <Texts>
         <Name>{item.name}</Name>
+        <Icons>
+          <FontAwesomeIcon icon={faPen} size="1x" />
+          <span>{item.replys.length}</span>
+          <FontAwesomeIcon icon={faHeart} size="1x" />
+          <span>좋아요</span>
+        </Icons>
         <Description>{item.description}</Description>
         <HashTagBox>
           {item.categories?.length > 0
