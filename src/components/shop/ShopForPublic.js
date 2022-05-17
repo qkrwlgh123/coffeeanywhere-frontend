@@ -96,7 +96,7 @@ function ShopForPublic(item) {
           <FontAwesomeIcon icon={faPen} size="1x" />
           <span>{item.replys.length}</span>
           <FontAwesomeIcon icon={faHeart} size="1x" />
-          <span>좋아요</span>
+          <span>{item.likes.length}</span>
         </Icons>
         <Description>{item.description}</Description>
         <HashTagBox>

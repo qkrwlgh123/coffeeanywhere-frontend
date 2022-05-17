@@ -52,12 +52,14 @@ const LIST_QUERY = gql`
       replys {
         content
       }
+      likes {
+        like
+      }
     }
   }
 `;
 
 function PublicList() {
-  const navigate = useNavigate();
   const [list, setList] = useState([]);
   const { loading, data, fetchMore } = useQuery(LIST_QUERY, {
     variables: {

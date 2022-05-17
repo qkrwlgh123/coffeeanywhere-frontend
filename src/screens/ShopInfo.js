@@ -1,4 +1,7 @@
-import { gql, useMutation, useQuery, useReactiveVar } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // ♡
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // ♥︎
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -7,7 +10,6 @@ import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import MapScript from '../components/shop/MapScript';
 import routes from '../routes';
-import { DescribeInput } from './CreateShop';
 
 const { kakao } = window;
 
@@ -46,7 +48,6 @@ const Buttons = styled.div`
   justify-content: flex-end;
   align-items: center;
   font-size: 18px;
-  visibility: ${(props) => (props.isMe ? 'visible' : 'hidden')};
   a {
     color: inherit;
     text-decoration: none;
@@ -58,6 +59,31 @@ const Buttons = styled.div`
   }
   span {
     cursor: pointer;
+  }
+`;
+
+const LikeBox = styled.div`
+  display: flex;
+  width: 33%;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 18px;
+`;
+
+const Like = styled.div`
+  display: flex;
+  width: 33%;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 18px;
+  cursor: pointer;
+  span {
+    margin-left: 5px;
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 `;
 
@@ -250,6 +276,7 @@ const SHOP_QUERY = gql`
           }
           createdAt
         }
+        isLike
       }
     }
   }
@@ -273,8 +300,28 @@ const ADD_REPLY = gql`
   }
 `;
 
+const ADD_LIKE = gql`
+  mutation addLike($id: Int, $like: Boolean) {
+    addLike(id: $id, like: $like) {
+      ok
+      error
+    }
+  }
+`;
+
+const DELETE_LIKE = gql`
+  mutation deleteLike($id: Int) {
+    deleteLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
+
 function ShopInfo() {
   const userName = localStorage.getItem('name');
+  const [isLike, setIsLike] = useState(null);
+  const [likeMessage, setLikeMessage] = useState('');
   const [reply, setReply] = useState('');
   const { id } = useParams();
   const navigate = useNavigate();
@@ -287,7 +334,7 @@ function ShopInfo() {
   const [categories, setCategories] = useState([]);
   const [replyList, setReplyList] = useState([]);
 
-  const { data, refetch } = useQuery(SHOP_QUERY, {
+  const { data, loading, refetch } = useQuery(SHOP_QUERY, {
     variables: {
       id: Number(id),
     },
@@ -306,11 +353,50 @@ function ShopInfo() {
         searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
         MapScript(data.seeCoffeeShop.shop);
         setIsMe(data?.seeCoffeeShop.shop.user.username === userName);
+        setIsLike(data?.seeCoffeeShop.shop.isLike);
       }
     },
   });
 
-  const [deleteShop, { loading }] = useMutation(DELETE_SHOP, {
+  const [addLike] = useMutation(ADD_LIKE, {
+    onCompleted: () => refetch(),
+    context: {
+      headers: {
+        token: localStorage.getItem(TOKEN),
+      },
+    },
+  });
+
+  const [deleteLike] = useMutation(DELETE_LIKE, {
+    onCompleted: () => refetch(),
+    context: {
+      headers: {
+        token: localStorage.getItem(TOKEN),
+      },
+    },
+  });
+
+  const handleLike = () => {
+    if (!isLike) {
+      setIsLike(true);
+      addLike({
+        variables: {
+          id: Number(id),
+          like: true,
+        },
+      });
+      setLikeMessage('내 관심목록에 추가되었습니다');
+    } else {
+      deleteLike({
+        variables: {
+          id: Number(id),
+        },
+      });
+      setLikeMessage('내 관심목록에서 제외되었습니다');
+    }
+  };
+
+  const [deleteShop] = useMutation(DELETE_SHOP, {
     onCompleted: () => {
       setMessage('삭제되었습니다.');
       setTimeout(() => navigate(routes.home, { replace: true }), 1000);
@@ -356,7 +442,7 @@ function ShopInfo() {
   const geocoder = new kakao.maps.services.Geocoder();
 
   function searchDetailAddrFromCoords(coords, callback) {
-    // 좌표로 법정동 상세 주소 정보를 요청합니다
+    // 좌표로 법정동 상세 주소 정보를 요청
     geocoder.coord2Address(coords.longitude, coords.latitude, callback);
   }
   //  좌표에 대한 주소정보를 표출하는 함수
@@ -370,19 +456,41 @@ function ShopInfo() {
   return (
     <InfoLayout>
       <PageTitle title={`${list?.name}`} />
-      {message === '' ? (
+      {message === '' && !loading ? (
         <InfoBox>
           <TitleBox>
             <Name>{list?.name}</Name>
             <Addr>{space ? space : null}</Addr>
-            <Buttons isMe={isMe}>
-              <Link to={`/shop/${id}`} reloadDocument>
-                <span disabled={message !== ''}>편집</span>
-              </Link>
-              <span onClick={handleDeleteShop} disabled={message !== ''}>
-                삭제
-              </span>
-            </Buttons>
+            {isMe ? (
+              <Buttons isMe={isMe}>
+                <Link to={`/shop/${id}`} reloadDocument>
+                  <span disabled={message !== ''}>편집</span>
+                </Link>
+                <span onClick={handleDeleteShop} disabled={message !== ''}>
+                  삭제
+                </span>
+              </Buttons>
+            ) : (
+              <LikeBox>
+                {likeMessage}
+                <Like onClick={handleLike}>
+                  {!isLike ? (
+                    <FontAwesomeIcon
+                      icon={regularHeart}
+                      color="orange"
+                      size="2x"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={solidHeart}
+                      color="orange"
+                      size="2x"
+                    />
+                  )}
+                  <span>찜하기</span>
+                </Like>
+              </LikeBox>
+            )}
           </TitleBox>
           <InfoContainer>
             <MapContainer id="myMap"></MapContainer>
