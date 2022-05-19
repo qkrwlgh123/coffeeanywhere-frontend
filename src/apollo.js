@@ -9,7 +9,6 @@ import { createUploadLink } from 'apollo-upload-client';
 
 export const TOKEN = 'token';
 export const NAME = 'name';
-export const ID = 'id';
 export const DARK_MODE = 'DARK_MODE';
 
 export const isLoggedInvar = makeVar(Boolean(localStorage.getItem(TOKEN)));
@@ -22,6 +21,7 @@ export const logUserIn = (token, name) => {
 
 export const logUserOut = () => {
   localStorage.removeItem(TOKEN);
+  localStorage.removeItem(NAME);
   isLoggedInvar(false);
 };
 

@@ -3,7 +3,8 @@ import styled from 'styled-components';
 const SNotification = styled.span`
   color: ${(props) => props.theme.accent};
   font-weight: 600;
-  margin-top: 15px;
+  font-size: 16px;
+  margin-bottom: 5px;
 `;
 
 function Notification({ message }) {

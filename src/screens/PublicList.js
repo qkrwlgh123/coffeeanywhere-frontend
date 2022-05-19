@@ -4,6 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import ShopForPublic from '../components/shop/ShopForPublic';
 import { Link, useNavigate } from 'react-router-dom';
+import PublicListLayout from '../components/shop/PublicListLayout';
 
 const Layout = styled.div`
   display: flex;
@@ -92,18 +93,20 @@ function PublicList() {
   };
 
   return (
-    <Layout>
-      {list?.map((item, index) => (
-        <Link to={`/${item.id}`}>
-          <ShopForPublic key={index} {...item} />
-        </Link>
-      ))}
-      {loading ? null : (
-        <FetchMoreBtn>
-          <span onClick={onFetchMore}>더보기</span>
-        </FetchMoreBtn>
-      )}
-    </Layout>
+    <PublicListLayout>
+      <Layout>
+        {list?.map((item, index) => (
+          <Link to={`/${item.id}`}>
+            <ShopForPublic key={index} {...item} />
+          </Link>
+        ))}
+        {loading ? null : (
+          <FetchMoreBtn>
+            <span onClick={onFetchMore}>더보기</span>
+          </FetchMoreBtn>
+        )}
+      </Layout>
+    </PublicListLayout>
   );
 }
 export default PublicList;

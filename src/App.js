@@ -13,6 +13,7 @@ import CreateShop from './screens/CreateShop';
 import ShopInfo from './screens/ShopInfo';
 import EditShop from './screens/EditShop';
 import PublicList from './screens/PublicList';
+import HeaderBar from './components/HeaderBar';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInvar);
@@ -23,10 +24,12 @@ function App() {
         <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
           <GlobalStyles />
           <Router>
+            <HeaderBar />
             <Routes>
+              <Route path={routes.home} element={<PublicList />}></Route>
               <Route
-                path={routes.home}
-                element={isLoggedIn ? <Home /> : <Login />}
+                path={routes.login}
+                element={isLoggedIn ? <PublicList /> : <Login />}
               ></Route>
               <Route
                 path={routes.signUp}
@@ -42,16 +45,7 @@ function App() {
                   )
                 }
               ></Route>
-              <Route
-                path={routes.shopInfo}
-                element={
-                  isLoggedIn ? (
-                    <ShopInfo />
-                  ) : (
-                    <Navigate to={routes.home} replace />
-                  )
-                }
-              ></Route>
+              <Route path={routes.shopInfo} element={<ShopInfo />}></Route>
               <Route
                 path={routes.editShop}
                 element={

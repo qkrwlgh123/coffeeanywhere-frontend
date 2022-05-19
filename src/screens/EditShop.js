@@ -26,23 +26,29 @@ const TitleBox = styled.div`
   width: 100%;
 `;
 
-const OpenBox = styled.div`
+export const OpenBox = styled.div`
+  display: flex;
+  flex-direction: column;
   label {
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+    img {
+      cursor: pointer;
+      margin-right: 7px;
+    }
   }
   span {
     cursor: pointer;
   }
 `;
 
-const OpenTrue = styled.img`
-  border: ${(props) => (props.open ? '7px solid black' : 'none')};
-  border-radius: 100px;
-`;
+export const Open = styled.img`
+  border: ${(props) => (props.open ? '10px solid black' : 'none')};
 
-const OpenFalse = styled.img`
-  border: ${(props) => (!props.open ? '7px solid black' : 'none')};
   border-radius: 100px;
+  width: 20px;
 `;
 
 const Name = styled.span`
@@ -85,7 +91,7 @@ const HashtagBox = styled.div`
   display: flex;
 `;
 
-const Hasgtag = styled.div`
+export const Hasgtag = styled.div`
   display: flex;
   border-radius: 5px;
   padding: 10px;
@@ -94,10 +100,11 @@ const Hasgtag = styled.div`
   margin-right: 10px;
   background-color: #e5e7eb;
   span:first-child {
-    margin-right: 7px;
+    margin-right: 10px;
   }
   div {
     cursor: pointer;
+    margin-right: -1px;
     svg {
       pointer-events: none;
     }
@@ -485,21 +492,15 @@ function EditShop() {
             <label>
               공개
               <input type="radio" />
-              <OpenTrue
-                open={open}
-                onClick={() => setOpen(true)}
-                src={radioImg}
-                style={{ width: '13px' }}
-              />
+              <Open open={open} onClick={() => setOpen(true)} src={radioImg} />
             </label>
             <label>
               비공개
               <input type="radio" />
-              <OpenFalse
-                open={open}
+              <Open
+                open={!open}
                 onClick={() => setOpen(false)}
                 src={radioImg}
-                style={{ width: '13px' }}
               />
             </label>
             <span open={open} onClick={handleOpen}>

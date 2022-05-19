@@ -18,14 +18,17 @@ import {
   faLocationDot,
   faX,
 } from '@fortawesome/free-solid-svg-icons';
-import { Message } from './ShopInfo';
+import { HashtagBox, Message } from './ShopInfo';
+import { Hasgtag, Open, OpenBox } from './EditShop';
+import radioImg from '../radioImg.png';
 
 const { kakao } = window;
 
-const CreateTitle = styled.span`
-  font-weight: 600;
-  font-size: 48px;
-  margin-bottom: 80px;
+const Title = styled.span`
+  font-size: 24px;
+  font-weight: 550;
+  margin-top: 50px;
+  margin-bottom: 20px;
 `;
 
 const CreateInput = styled.input`
@@ -48,7 +51,6 @@ export const ListBox = styled.div`
   width: 100%;
   display: flex;
   margin-bottom: 15px;
-  justify-content: center;
 `;
 
 export const ShopList = styled.ul``;
@@ -60,7 +62,6 @@ export const ShopName = styled.li`
 
 export const DescribeInput = styled.input`
   width: 90%;
-  margin-top: 20px;
   border-radius: 10px;
   padding: 10px;
   background-color: #fafafa;
@@ -107,37 +108,24 @@ const SelectedShop = styled.div`
 const InputHashtagsBox = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: 20px 0px;
-  span:last-child {
-    margin-top: 20px;
-    cursor: pointer;
-    font-size: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 0.5px solid rgba(219, 219, 219, 1);
-  }
+  margin-bottom: -25px;
 `;
 
-const InputHashtags = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  margin: 2px 0px;
-  position: relative;
-  right: 10px;
-  span {
-    font-size: 18px;
-    margin: 0px 5px;
-  }
+const AddHashTag = styled.span`
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0.5px solid rgba(219, 219, 219, 1);
+  pointer-events: ${(props) => (props.length >= 5 ? 'none' : 'auto')};
+  opacity: ${(props) => (props.length >= 5 ? 0.4 : 1)};
 `;
 
 export const UploadBox = styled.div`
   display: flex;
   width: 50%;
-  justify-content: center;
   label {
     color: rgb(38, 38, 38);
     border: 0.5px solid rgba(219, 219, 219, 1);
@@ -164,19 +152,45 @@ const PhotoPrevBox = styled.div`
   }
 `;
 
-const FirstPrevPhoto = styled.div`
+const PrevPhoto = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    padding: 13px;
+    opacity: 0.7;
+    position: relative;
+    left: 10px;
+    margin-bottom: -10px;
+    cursor: pointer;
+    svg {
+      pointer-events: none;
+    }
+  }
+  margin: 0px 15px;
   img {
     margin: 0px;
+    border-radius: 5px;
   }
-  div {
-    text-align: center;
-    background-color: black;
-    opacity: 0.8;
-    color: white;
-    width: 150px;
-    margin-top: -32px;
-    padding: 8px;
-  }
+`;
+
+const RepresentPhoto = styled.div`
+  text-align: center;
+  background-color: black;
+  opacity: 0.8;
+  color: white;
+  width: 150px;
+  margin-top: -29px;
+  padding: 8px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 `;
 
 const PrevPhotoLength = styled.span`
@@ -192,6 +206,12 @@ export const FileUpload = styled.input`
   border: 0;
 `;
 
+const BtnBox = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
 const CREATE_SHOP_MUTATION = gql`
   mutation createShop(
     $name: String!
@@ -199,6 +219,7 @@ const CREATE_SHOP_MUTATION = gql`
     $longitude: String
     $latitude: String
     $description: String
+    $open: Boolean
     $file: [Upload]
   ) {
     createShop(
@@ -207,6 +228,7 @@ const CREATE_SHOP_MUTATION = gql`
       longitude: $longitude
       latitude: $latitude
       description: $description
+      open: $open
       file: $file
     ) {
       ok
@@ -218,25 +240,18 @@ const CREATE_SHOP_MUTATION = gql`
 function CreateShop() {
   const navigate = useNavigate();
 
-  const [hashTagNum, setHashTagNum] = useState(1);
-  const [hashTagArr, setHashTagArr] = useState([hashTagNum]);
-  const [maxhashTag, setMaxhashTag] = useState('');
+  const [hashTag, setHashTag] = useState('');
+  const [hashTagArr, setHashTagArr] = useState([]);
 
   const [photoPrevArr, setPhotoPrevArr] = useState([]);
   const [photoUploadArr, setPhotoUploadArr] = useState([]);
 
-  const handleHashtagNum = () => {
-    if (hashTagNum < 5) {
-      setHashTagNum((current) => current + 1);
-      setHashTagArr([...hashTagArr, hashTagNum]);
-    } else {
-      setMaxhashTag('해쉬태그는 최대 5개까지 추가 가능합니다');
-    }
-  };
-
-  const [message, setMessage] = useState('');
+  const [completeMessage, setCompleteMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [place, setPlace] = useState('');
   const [shopName, setShopName] = useState('');
+
+  const [open, setOpen] = useState(true);
 
   const onPlace = (event) => {
     setPlace(event.target.value);
@@ -297,13 +312,35 @@ function CreateShop() {
       createShop: { ok },
     } = data;
     if (ok) {
-      setMessage('성공적으로 등록되었습니다.');
+      setCompleteMessage('성공적으로 등록되었습니다.');
       setTimeout(() => navigate(routes.home), 1000);
     }
   };
 
   const removeShopName = () => {
     setShopName('');
+  };
+
+  const handleHashTag = (event) => {
+    setErrorMessage('');
+    setHashTag(event.target.value);
+  };
+
+  const handleAddHashTag = () => {
+    if (hashTag === '') {
+      setErrorMessage('해쉬태그를 한 글자 이상 입력해주세요.');
+      return;
+    } else if (hashTagArr.includes(hashTag)) {
+      setErrorMessage('중복된 해쉬태그입니다.');
+      return;
+    }
+    setHashTagArr([...hashTagArr, hashTag]);
+    setHashTag('');
+  };
+
+  const handleDeleteHashTag = (event) => {
+    const deleteObj = Number(event.target.getAttribute('index'));
+    setHashTagArr(hashTagArr.filter((_, index) => index !== deleteObj));
   };
 
   const handleAddFile = (event) => {
@@ -317,6 +354,14 @@ function CreateShop() {
       setPhotoPrevArr([...photoPrevArr, base64Src]);
       setPhotoUploadArr([...photoUploadArr, imgFile]);
     };
+  };
+
+  const handleDeleteFile = (event) => {
+    const deletedIndex = Number(event.target.getAttribute('index'));
+    setPhotoPrevArr(photoPrevArr.filter((_, index) => index !== deletedIndex));
+    setPhotoUploadArr(
+      photoUploadArr.filter((_, index) => index !== deletedIndex)
+    );
   };
 
   const [createShop, { loading }] = useMutation(CREATE_SHOP_MUTATION, {
@@ -333,14 +378,8 @@ function CreateShop() {
       return;
     }
     let caption = '';
-    for (let i = 1; i <= 5; i++) {
-      if (data[i] !== undefined) {
-        if (caption.includes(data[i]) && data[i] !== '') {
-          alert('중복된 해쉬태그가 존재합니다.');
-          return;
-        }
-        caption = caption + `#${data[i]}`;
-      }
+    for (let i in hashTagArr) {
+      caption = caption + `#${hashTagArr[i]}`;
     }
     const { description } = data;
     const { name, latitude, longitude } = sendData;
@@ -352,6 +391,7 @@ function CreateShop() {
         longitude,
         latitude,
         description,
+        open,
         file: photoUploadArr,
       },
     });
@@ -361,17 +401,23 @@ function CreateShop() {
     mode: 'onChange',
   });
 
+  console.log(open);
+
   return (
     <CreateLayout>
-      <PageTitle title="Add a shop" />
+      <PageTitle title="커피샵 추가" />
       <CreateShopBox>
-        {message === '' ? (
-          <CreateTitle>커피샵 추가하기</CreateTitle>
-        ) : (
-          <Message>{message}</Message>
-        )}
-        {message === '' ? (
-          <form onSubmit={handleSubmit(onSubmitValid)}>
+        <Message>{completeMessage}</Message>
+        {completeMessage === '' ? (
+          <form
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+              }
+            }}
+            onSubmit={handleSubmit(onSubmitValid)}
+          >
+            <Title>상호명 검색하기</Title>
             <CreateInput
               ref={register}
               name="name"
@@ -379,7 +425,7 @@ function CreateShop() {
               onChange={onPlace}
               disabled={shopName !== ''}
               type="text"
-              placeholder="상호명 검색"
+              placeholder="알고 있는 커피샵을 검색해보세요."
             />
             {placeList.length > 0 && shopName === '' ? (
               <ListBox>
@@ -418,21 +464,37 @@ function CreateShop() {
                 />
               </SelectedShop>
             )}
+            <Title>관련 키워드</Title>
+            <Notification message={errorMessage} />
             <InputHashtagsBox>
-              {hashTagArr.map((item, index) => (
-                <InputHashtags key={index}>
-                  <span>#</span>
-                  <CreateInput
-                    ref={register}
-                    name={`${index + 1}`}
-                    type="text"
-                    placeholder="해쉬 태그 입력 "
-                  />
-                </InputHashtags>
-              ))}
-              <Notification message={maxhashTag} />
-              <span onClick={handleHashtagNum}>해쉬태그 추가</span>
+              <CreateInput
+                value={hashTag}
+                onChange={handleHashTag}
+                placeholder="태그를 입력하세요."
+                disabled={hashTagArr.length >= 5}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    handleAddHashTag();
+                  }
+                }}
+              />
+              <AddHashTag length={hashTagArr.length} onClick={handleAddHashTag}>
+                추가
+              </AddHashTag>
             </InputHashtagsBox>
+            <HashtagBox>
+              {hashTagArr.length !== 0
+                ? hashTagArr.map((item, index) => (
+                    <Hasgtag key={item}>
+                      <span>#{item}</span>
+                      <div index={index} onClick={handleDeleteHashTag}>
+                        <FontAwesomeIcon icon={faX} color="gray" size="xs" />
+                      </div>
+                    </Hasgtag>
+                  ))
+                : null}
+            </HashtagBox>
+            <Title>사진 등록</Title>
             <UploadBox>
               <label htmlFor="file">
                 <FontAwesomeIcon icon={faCamera} color="black" size="1x" />
@@ -456,36 +518,68 @@ function CreateShop() {
             <PhotoPrevBox>
               {photoPrevArr.map((item, index) =>
                 index === 0 ? (
-                  <FirstPrevPhoto>
+                  <PrevPhoto key={index}>
+                    <div index={index} onClick={handleDeleteFile}>
+                      <FontAwesomeIcon icon={faX} color="white" size="1x" />
+                    </div>
                     <img
                       src={item}
                       style={{ width: '150px', height: '150px' }}
                     />
-                    <div>대표 사진</div>
-                  </FirstPrevPhoto>
+                    <RepresentPhoto>대표 사진</RepresentPhoto>
+                  </PrevPhoto>
                 ) : (
-                  <div>
+                  <PrevPhoto key={index}>
+                    <div index={index} onClick={handleDeleteFile}>
+                      <FontAwesomeIcon icon={faX} color="white" size="1x" />
+                    </div>
                     <img
                       src={item}
                       style={{ width: '150px', height: '150px' }}
                     />
-                  </div>
+                  </PrevPhoto>
                 )
               )}
             </PhotoPrevBox>
+            <Title>커피숍 설명 작성</Title>
             <DescribeInput
               ref={register}
               name="description"
               type="text"
-              placeholder="설명 작성"
+              placeholder="설명을 작성하세요."
             />
-            {message === '' ? (
-              <Button
-                type="submit"
-                value={loading ? 'Loading...' : '커피샵 추가'}
-                disabled={loading || sendData.longitude === undefined}
-              />
-            ) : null}
+            <Title>공개</Title>
+            <OpenBox>
+              <label>
+                <input type="radio" />
+                <Open
+                  open={open}
+                  src={radioImg}
+                  onClick={() => setOpen(true)}
+                  style={{ width: '20px' }}
+                />
+                외부에 공개
+              </label>
+              <label>
+                <input type="radio" />
+                <Open
+                  open={!open}
+                  src={radioImg}
+                  onClick={() => setOpen(false)}
+                  style={{ width: '20px' }}
+                />
+                나만 보기
+              </label>
+            </OpenBox>
+            <BtnBox>
+              {completeMessage === '' ? (
+                <Button
+                  type="submit"
+                  value={loading ? 'Loading...' : '커피샵 추가'}
+                  disabled={loading || sendData.longitude === undefined}
+                />
+              ) : null}
+            </BtnBox>
           </form>
         ) : null}
       </CreateShopBox>

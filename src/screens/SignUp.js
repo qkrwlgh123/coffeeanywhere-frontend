@@ -190,7 +190,7 @@ function SignUp() {
           />
         </form>
       </FormBox>
-      <BottomBox cta="Have an account?" linkText="Log in" link={routes.home} />
+      <BottomBox cta="Have an account?" linkText="Log in" link={routes.login} />
     </AuthLayout>
   );
 }

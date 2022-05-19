@@ -1,11 +1,11 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // ♡
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // ♥︎
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { TOKEN } from '../apollo';
+import { isLoggedInvar, TOKEN } from '../apollo';
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import MapScript from '../components/shop/MapScript';
@@ -110,13 +110,14 @@ const TextsContainer = styled.div`
   flex-direction: column;
 `;
 
-const HashtagBox = styled.div`
+export const HashtagBox = styled.div`
   margin-top: 35px;
   margin-left: 10px;
   display: flex;
   div {
+    display: flex;
+    align-items: center;
     border-radius: 5px;
-    padding: 10px;
     font-weight: 600;
     font-size: 16px;
     margin-right: 10px;
@@ -247,6 +248,9 @@ const ReplyContent = styled.div`
 export const Message = styled.span`
   position: absolute;
   top: 45%;
+  left: 43%;
+  font-weight: 400;
+  font-size: 20px;
 `;
 
 const SHOP_QUERY = gql`
@@ -319,6 +323,7 @@ const DELETE_LIKE = gql`
 `;
 
 function ShopInfo() {
+  const isLogged = useReactiveVar(isLoggedInvar);
   const userName = localStorage.getItem('name');
   const [isLike, setIsLike] = useState(null);
   const [likeMessage, setLikeMessage] = useState('');
@@ -352,8 +357,8 @@ function ShopInfo() {
         setDescription(data.seeCoffeeShop.shop.description);
         searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
         MapScript(data.seeCoffeeShop.shop);
-        setIsMe(data?.seeCoffeeShop.shop.user.username === userName);
-        setIsLike(data?.seeCoffeeShop.shop.isLike);
+        setIsMe(data?.seeCoffeeShop?.shop?.user?.username === userName);
+        setIsLike(data?.seeCoffeeShop?.shop?.isLike);
       }
     },
   });
@@ -377,6 +382,10 @@ function ShopInfo() {
   });
 
   const handleLike = () => {
+    if (!isLogged) {
+      alert('찜하려면 로그인해주세요!');
+      return;
+    }
     if (!isLike) {
       setIsLike(true);
       addLike({
@@ -474,7 +483,7 @@ function ShopInfo() {
               <LikeBox>
                 {likeMessage}
                 <Like onClick={handleLike}>
-                  {!isLike ? (
+                  {!isLike || !isLogged ? (
                     <FontAwesomeIcon
                       icon={regularHeart}
                       color="orange"
@@ -523,7 +532,8 @@ function ShopInfo() {
           <Line></Line>
           <ReplyInputBox>
             <ReplyInput
-              placeholder="댓글 작성"
+              placeholder={isLogged ? '댓글 작성' : '로그인이 필요합니다.'}
+              disabled={!isLogged}
               value={reply}
               onChange={handleReply}
               onKeyPress={(e) => {
@@ -535,7 +545,7 @@ function ShopInfo() {
               }}
             />
             <ReplyBtn
-              disabled={reply.length < 2}
+              disabled={reply.length < 2 || !isLogged}
               onClick={submitReply}
               value="등록"
             />
