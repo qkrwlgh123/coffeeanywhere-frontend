@@ -9,7 +9,7 @@ const Input = styled.input`
   margin-top: 5px;
   box-sizing: border-box;
   &::placeholder {
-    font-size: 12px;
+    font-size: 15px;
   }
 `;
 

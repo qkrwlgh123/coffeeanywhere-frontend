@@ -2,6 +2,8 @@ import { faHeart, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components';
+import Avatar from '../auth/Avatar';
+import SmallUserInfo from '../auth/SmallUserInfo';
 
 const ShopBox = styled.div`
   display: flex;
@@ -11,6 +13,24 @@ const ShopBox = styled.div`
   @media (max-width: 800px) {
     width: 80%;
     flex-direction: column;
+  }
+`;
+
+const Name = styled.span`
+  font-size: 28px;
+  font-weight: 400;
+
+  @media (max-width: 800px) {
+    margin: 15px 0px;
+  }
+`;
+
+const Address = styled.span`
+  font-size: 18px;
+  font-weight: 400;
+  @media (max-width: 800px) {
+    margin-top: -5px;
+    margin-bottom: 15px;
   }
 `;
 
@@ -50,18 +70,10 @@ const Icons = styled.div`
   }
 `;
 
-const Name = styled.span`
-  font-size: 28px;
-  font-weight: 400;
-
-  @media (max-width: 800px) {
-    margin: 15px 0px;
-  }
-`;
-
 const Description = styled.span`
   font-size: 20px;
   font-weight: 400;
+  margin: 15px 0px;
 `;
 
 const HashTagBox = styled.div`
@@ -92,6 +104,7 @@ function ShopForPublic(item) {
       ) : null}
       <Texts>
         <Name>{item.name}</Name>
+        <Address>{item.address}</Address>
         <Icons>
           <FontAwesomeIcon icon={faPen} size="1x" />
           <span>{item.replys.length}</span>
@@ -107,9 +120,7 @@ function ShopForPublic(item) {
             : null}
         </HashTagBox>
       </Texts>
-      <div>
-        <span>{item.user?.username}</span>
-      </div>
+      <SmallUserInfo url={item?.user?.avatar} username={item?.user?.username} />
     </ShopBox>
   );
 }

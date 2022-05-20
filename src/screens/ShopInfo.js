@@ -6,12 +6,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { isLoggedInvar, TOKEN } from '../apollo';
+import Avatar from '../components/auth/Avatar';
+import SmallUserInfo from '../components/auth/SmallUserInfo';
+
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import MapScript from '../components/shop/MapScript';
 import routes from '../routes';
-
-const { kakao } = window;
 
 const InfoBox = styled.div`
   margin-top: 5%;
@@ -232,17 +233,15 @@ const ReplyBox = styled.div`
 
 const Reply = styled.div`
   display: flex;
-  flex-direction: column;
-`;
-
-const ReplyOwner = styled.span`
-  font-size: 14px;
-  font-weight: 600;
+  border-bottom: 1px solid rgb(229, 231, 235);
+  margin-bottom: 40px;
+  padding-bottom: 45px;
 `;
 
 const ReplyContent = styled.div`
   font-size: 18px;
   padding: 25px 0px 40px 0px;
+  margin-left: 25px;
 `;
 
 export const Message = styled.span`
@@ -263,9 +262,11 @@ const SHOP_QUERY = gql`
         longitude
         latitude
         description
+        address
         user {
           id
           username
+          avatar
         }
         photos {
           url
@@ -277,6 +278,7 @@ const SHOP_QUERY = gql`
           content
           user {
             username
+            avatar
           }
           createdAt
         }
@@ -333,7 +335,7 @@ function ShopInfo() {
   const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
   const [list, setList] = useState([]);
-  const [address, setAddress] = useState([]);
+  const [address, setAddress] = useState('');
   const [description, setDescription] = useState('한줄평을 추가하세요');
   const [photos, setPhotos] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -350,15 +352,15 @@ function ShopInfo() {
     },
     onCompleted: () => {
       if (data) {
-        setList(data.seeCoffeeShop.shop);
-        setPhotos(data.seeCoffeeShop.shop.photos);
-        setCategories(data.seeCoffeeShop.shop.categories);
-        setReplyList(data.seeCoffeeShop.shop.replys);
-        setDescription(data.seeCoffeeShop.shop.description);
-        searchDetailAddrFromCoords(data.seeCoffeeShop.shop, Info);
-        MapScript(data.seeCoffeeShop.shop);
         setIsMe(data?.seeCoffeeShop?.shop?.user?.username === userName);
         setIsLike(data?.seeCoffeeShop?.shop?.isLike);
+        setList(data.seeCoffeeShop.shop);
+        MapScript(data.seeCoffeeShop.shop);
+        setCategories(data.seeCoffeeShop.shop.categories);
+        setDescription(data.seeCoffeeShop.shop.description);
+        setPhotos(data.seeCoffeeShop.shop.photos);
+        setReplyList(data.seeCoffeeShop.shop.replys);
+        setAddress(data.seeCoffeeShop.shop.address);
       }
     },
   });
@@ -447,20 +449,6 @@ function ShopInfo() {
       },
     });
   };
-  // 주소-좌표 변환 객체를 생성
-  const geocoder = new kakao.maps.services.Geocoder();
-
-  function searchDetailAddrFromCoords(coords, callback) {
-    // 좌표로 법정동 상세 주소 정보를 요청
-    geocoder.coord2Address(coords.longitude, coords.latitude, callback);
-  }
-  //  좌표에 대한 주소정보를 표출하는 함수
-  function Info(result, status) {
-    if (status === kakao.maps.services.Status.OK) {
-      setAddress(result);
-    }
-  }
-  const space = address[0]?.address.address_name;
 
   return (
     <InfoLayout>
@@ -469,7 +457,7 @@ function ShopInfo() {
         <InfoBox>
           <TitleBox>
             <Name>{list?.name}</Name>
-            <Addr>{space ? space : null}</Addr>
+            <Addr>{address}</Addr>
             {isMe ? (
               <Buttons isMe={isMe}>
                 <Link to={`/shop/${id}`} reloadDocument>
@@ -555,7 +543,10 @@ function ShopInfo() {
             {replyList?.length > 0 ? (
               replyList.map((item) => (
                 <Reply>
-                  <ReplyOwner>{item.user.username}</ReplyOwner>
+                  <SmallUserInfo
+                    url={item.user.avatar}
+                    username={item.user.username}
+                  />
                   <ReplyContent>{item.content}</ReplyContent>
                 </Reply>
               ))

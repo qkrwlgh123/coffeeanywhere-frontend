@@ -220,6 +220,7 @@ const CREATE_SHOP_MUTATION = gql`
     $latitude: String
     $description: String
     $open: Boolean
+    $address: String
     $file: [Upload]
   ) {
     createShop(
@@ -229,6 +230,7 @@ const CREATE_SHOP_MUTATION = gql`
       latitude: $latitude
       description: $description
       open: $open
+      address: $address
       file: $file
     ) {
       ok
@@ -267,7 +269,6 @@ function CreateShop() {
   };
 
   const [placeList, setPlaceList] = useState([]);
-  let name, latitude, longitude;
 
   const [sendData, setSendData] = useState({});
 
@@ -298,12 +299,15 @@ function CreateShop() {
     setPlaceList([]);
   };
 
+  let name, latitude, longitude, address;
+
   const saveCoordinates = (event) => {
     name = event.target.getAttribute('name');
     longitude = event.target.getAttribute('x');
     latitude = event.target.getAttribute('y');
+    address = event.target.getAttribute('z');
     setShopName(name);
-    setSendData({ name, longitude, latitude });
+    setSendData({ name, longitude, latitude, address });
     clearList();
   };
 
@@ -372,7 +376,6 @@ function CreateShop() {
       },
     },
   });
-
   const onSubmitValid = (data) => {
     if (loading) {
       return;
@@ -382,7 +385,7 @@ function CreateShop() {
       caption = caption + `#${hashTagArr[i]}`;
     }
     const { description } = data;
-    const { name, latitude, longitude } = sendData;
+    const { name, latitude, longitude, address } = sendData;
 
     createShop({
       variables: {
@@ -390,6 +393,7 @@ function CreateShop() {
         caption,
         longitude,
         latitude,
+        address,
         description,
         open,
         file: photoUploadArr,
@@ -400,8 +404,6 @@ function CreateShop() {
   const { register, handleSubmit } = useForm({
     mode: 'onChange',
   });
-
-  console.log(open);
 
   return (
     <CreateLayout>
@@ -431,14 +433,15 @@ function CreateShop() {
               <ListBox>
                 <ShopList>
                   {placeList.map((item) => (
-                    <ShopName>
-                      {item.place_name} - <Address>{item.address_name}</Address>{' '}
+                    <ShopName key={item.id} a={item.id}>
+                      {item.place_name} -{' '}
+                      <Address>{item.road_address_name}</Address>
                       <SelectBtn
                         onClick={saveCoordinates}
+                        name={item.place_name}
                         x={item.x}
                         y={item.y}
-                        name={item.place_name}
-                        key={item.id}
+                        z={item.road_address_name}
                       >
                         선택
                       </SelectBtn>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { gql, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import ShopForPublic from '../components/shop/ShopForPublic';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PublicListLayout from '../components/shop/PublicListLayout';
 
 const Layout = styled.div`
@@ -42,8 +42,10 @@ const LIST_QUERY = gql`
       name
       user {
         username
+        avatar
       }
       description
+      address
       categories {
         name
       }
