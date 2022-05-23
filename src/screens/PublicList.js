@@ -41,6 +41,7 @@ const LIST_QUERY = gql`
       id
       name
       user {
+        id
         username
         avatar
       }
@@ -98,9 +99,7 @@ function PublicList() {
     <PublicListLayout>
       <Layout>
         {list?.map((item, index) => (
-          <Link to={`/${item.id}`}>
-            <ShopForPublic key={index} {...item} />
-          </Link>
+          <ShopForPublic key={index} {...item} />
         ))}
         {loading ? null : (
           <FetchMoreBtn>

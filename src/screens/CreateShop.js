@@ -19,19 +19,19 @@ import {
   faX,
 } from '@fortawesome/free-solid-svg-icons';
 import { HashtagBox, Message } from './ShopInfo';
-import { Hasgtag, Open, OpenBox } from './EditShop';
+
 import radioImg from '../radioImg.png';
 
 const { kakao } = window;
 
-const Title = styled.span`
+export const Title = styled.span`
   font-size: 24px;
   font-weight: 550;
   margin-top: 50px;
   margin-bottom: 20px;
 `;
 
-const CreateInput = styled.input`
+export const CreateInput = styled.input`
   width: 50%;
   border-radius: 10px;
   padding: 10px;
@@ -105,14 +105,34 @@ const SelectedShop = styled.div`
   border: 0.5px solid rgba(219, 219, 219, 1);
 `;
 
-const InputHashtagsBox = styled.div`
+export const InputHashtagsBox = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   margin-bottom: -25px;
 `;
 
-const AddHashTag = styled.span`
+export const Hashtag = styled.div`
+  display: flex;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 10px;
+  background-color: #e5e7eb;
+  span:first-child {
+    margin-right: 10px;
+  }
+  div {
+    cursor: pointer;
+    margin-right: -1px;
+    svg {
+      pointer-events: none;
+    }
+  }
+`;
+
+export const AddHashTag = styled.span`
   cursor: pointer;
   margin-left: 10px;
   font-size: 18px;
@@ -145,14 +165,14 @@ export const UploadBox = styled.div`
   }
 `;
 
-const PhotoPrevBox = styled.div`
+export const PhotoPrevBox = styled.div`
   display: flex;
   img {
     margin: 0px 5px;
   }
 `;
 
-const PrevPhoto = styled.div`
+export const PrevPhoto = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -181,7 +201,7 @@ const PrevPhoto = styled.div`
   }
 `;
 
-const RepresentPhoto = styled.div`
+export const RepresentPhoto = styled.div`
   text-align: center;
   background-color: black;
   opacity: 0.8;
@@ -193,7 +213,7 @@ const RepresentPhoto = styled.div`
   border-bottom-right-radius: 5px;
 `;
 
-const PrevPhotoLength = styled.span`
+export const PrevPhotoLength = styled.span`
   color: ${(props) => (props.length > 0 ? 'orange' : 'black')};
 `;
 
@@ -206,10 +226,35 @@ export const FileUpload = styled.input`
   border: 0;
 `;
 
-const BtnBox = styled.div`
+export const BtnBox = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
+`;
+
+export const OpenBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  label {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+    img {
+      cursor: pointer;
+      margin-right: 7px;
+    }
+  }
+  span {
+    cursor: pointer;
+  }
+`;
+
+export const Open = styled.img`
+  border: ${(props) => (props.open ? '10px solid black' : 'none')};
+
+  border-radius: 100px;
+  width: 20px;
 `;
 
 const CREATE_SHOP_MUTATION = gql`
@@ -488,12 +533,12 @@ function CreateShop() {
             <HashtagBox>
               {hashTagArr.length !== 0
                 ? hashTagArr.map((item, index) => (
-                    <Hasgtag key={item}>
+                    <Hashtag key={item}>
                       <span>#{item}</span>
                       <div index={index} onClick={handleDeleteHashTag}>
                         <FontAwesomeIcon icon={faX} color="gray" size="xs" />
                       </div>
-                    </Hasgtag>
+                    </Hashtag>
                   ))
                 : null}
             </HashtagBox>

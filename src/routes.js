@@ -4,7 +4,8 @@ const routes = {
   signUp: '/sign-up',
   createShop: '/add',
   shopInfo: '/:id',
-  editShop: '/shop/:id',
+  editShop: '/edit/:id',
   publiclist: '/public',
+  profile: '/profile/:name',
 };
 export default routes;

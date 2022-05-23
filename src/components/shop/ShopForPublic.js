@@ -1,8 +1,8 @@
 import { faHeart, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Avatar from '../auth/Avatar';
 import SmallUserInfo from '../auth/SmallUserInfo';
 
 const ShopBox = styled.div`
@@ -98,12 +98,16 @@ function ShopForPublic(item) {
   return (
     <ShopBox>
       {item?.photos?.length > 0 ? (
-        <ImageBox>
-          <Image src={item.photos[0].url} />
-        </ImageBox>
+        <Link to={`/${item.id}`}>
+          <ImageBox>
+            <Image src={item.photos[0].url} />
+          </ImageBox>
+        </Link>
       ) : null}
       <Texts>
-        <Name>{item.name}</Name>
+        <Link to={`/${item.id}`}>
+          <Name>{item.name}</Name>
+        </Link>
         <Address>{item.address}</Address>
         <Icons>
           <FontAwesomeIcon icon={faPen} size="1x" />

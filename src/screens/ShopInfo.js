@@ -460,7 +460,7 @@ function ShopInfo() {
             <Addr>{address}</Addr>
             {isMe ? (
               <Buttons isMe={isMe}>
-                <Link to={`/shop/${id}`} reloadDocument>
+                <Link to={`/edit/${id}`} reloadDocument>
                   <span disabled={message !== ''}>편집</span>
                 </Link>
                 <span onClick={handleDeleteShop} disabled={message !== ''}>
