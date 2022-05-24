@@ -56,6 +56,7 @@ const EDIT_SHOP_MUTATION = gql`
     $description: String
     $open: Boolean
     $file: [Upload]
+    $deleteFromS3: [String]
   ) {
     editCoffeeShop(
       id: $id
@@ -63,6 +64,7 @@ const EDIT_SHOP_MUTATION = gql`
       description: $description
       open: $open
       file: $file
+      deleteFromS3: $deleteFromS3
     ) {
       ok
       error
@@ -78,6 +80,7 @@ function EditShop() {
 
   const [photoPrevArr, setPhotoPrevArr] = useState([]);
   const [photoUploadArr, setPhotoUploadArr] = useState([]);
+  const [photoDeleteArr, setPhotoDeleteArr] = useState([]);
 
   const [completeMessage, setCompleteMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -110,7 +113,9 @@ function EditShop() {
       }
     },
   });
-
+  console.log('미리보기 사진들', photoPrevArr);
+  console.log('업로드 사진들', photoUploadArr);
+  console.log('삭제할 사진들', photoDeleteArr);
   const onCompleted = (data) => {
     const {
       editCoffeeShop: { ok },
@@ -167,10 +172,23 @@ function EditShop() {
 
   const handleDeleteFile = (event) => {
     const deletedIndex = Number(event.target.getAttribute('index'));
-    setPhotoPrevArr(photoPrevArr.filter((_, index) => index !== deletedIndex));
-    setPhotoUploadArr(
-      photoUploadArr.filter((_, index) => index !== deletedIndex)
-    );
+    const file = photoUploadArr[deletedIndex];
+    if (typeof file === 'object') {
+      setPhotoPrevArr(
+        photoPrevArr.filter((_, index) => index !== deletedIndex)
+      );
+      setPhotoUploadArr(
+        photoUploadArr.filter((_, index) => index !== deletedIndex)
+      );
+    } else {
+      setPhotoDeleteArr([...photoDeleteArr, file]);
+      setPhotoPrevArr(
+        photoPrevArr.filter((_, index) => index !== deletedIndex)
+      );
+      setPhotoUploadArr(
+        photoUploadArr.filter((_, index) => index !== deletedIndex)
+      );
+    }
   };
 
   const { register, handleSubmit } = useForm({
@@ -194,11 +212,11 @@ function EditShop() {
         description,
         open,
         file: photoUploadArr,
+        deleteFromS3: photoDeleteArr,
       },
     });
   };
-  console.log(photoPrevArr);
-  console.log(photoUploadArr);
+
   return (
     <CreateLayout>
       <PageTitle title="커피샵 정보 수정" />
