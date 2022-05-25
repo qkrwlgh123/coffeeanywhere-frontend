@@ -8,9 +8,8 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   width: 100%;
-  max-width: 1300px;
 `;
 function PublicListLayout({ children }) {
   return (

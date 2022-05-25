@@ -1,11 +1,16 @@
 import { gql, useQuery, useReactiveVar } from '@apollo/client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { isLoggedInvar, logUserOut } from '../apollo';
 import routes from './../routes';
 import Avatar from './auth/Avatar';
 import { TOKEN } from '../apollo';
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPenToSquare,
+  faRightToBracket,
+} from '@fortawesome/free-solid-svg-icons';
 
 const HeaderBox = styled.div`
   display: flex;
@@ -14,42 +19,44 @@ const HeaderBox = styled.div`
   width: 100%;
   position: fixed;
   top: 0px;
-  padding: 30px 50px;
-  color: white;
-  background-color: black;
+  padding: 24px;
+  color: #000000;
+  background-color: #ffffff;
   z-index: 999;
   a {
     :visited {
-      color: white;
+      color: #000000;
     }
   }
 `;
 
 const Logo = styled.div`
   cursor: pointer;
-  font-size: 18px;
-  margin-left: 250px;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: 'Gugi';
 `;
 
 const InfoBox = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 120px;
-  width: 190px;
-  height: 20px;
-  div {
-    margin-right: 30px;
+`;
+
+const IconButton = styled.div`
+  cursor: pointer;
+  color: ${(props) => (props.changeColor ? props.theme.green : '#1f2937')};
+  margin-left: 24px;
+  svg {
+    font-size: 25px;
+    margin-right: 5px;
   }
 `;
 
-const ButtonsBox = styled.div`
-  margin-right: 80px;
-`;
+const ButtonsBox = styled.div``;
 
 const Button = styled.span`
-  cursor: pointer;
-  font-size: 18px;
-  margin: 0px 20px;
+  font-size: 20px;
+  font-weight: 400;
 `;
 
 const INFO_QUERY = gql`
@@ -61,6 +68,9 @@ const INFO_QUERY = gql`
 `;
 
 function HeaderBar() {
+  const [changeNewShoptoGreen, setChangeNewShoptoGreen] = useState('');
+  const [changeLogintoGreen, setChangeLogintoGreen] = useState('');
+  const navigate = useNavigate();
   const isLogged = useReactiveVar(isLoggedInvar);
   const [profileImg, setProfileImg] = useState('');
   const { data } = useQuery(INFO_QUERY, {
@@ -76,7 +86,7 @@ function HeaderBar() {
     <HeaderBox>
       <Link to={routes.home}>
         <Logo>
-          <span>로고</span>
+          <span>modu</span>
         </Logo>
       </Link>
       <ButtonsBox>
@@ -87,12 +97,24 @@ function HeaderBar() {
           </InfoBox>
         ) : (
           <InfoBox>
-            <Link to={routes.login}>
+            <IconButton
+              onClick={() => navigate(routes.createShop)}
+              changeColor={changeNewShoptoGreen}
+              onMouseOver={() => setChangeNewShoptoGreen(true)}
+              onMouseLeave={() => setChangeNewShoptoGreen(false)}
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <Button>새 글 쓰기</Button>
+            </IconButton>
+            <IconButton
+              onClick={() => navigate(routes.login)}
+              changeColor={changeLogintoGreen}
+              onMouseOver={() => setChangeLogintoGreen(true)}
+              onMouseLeave={() => setChangeLogintoGreen(false)}
+            >
+              <FontAwesomeIcon icon={faRightToBracket} />
               <Button>로그인</Button>
-            </Link>
-            <Link to={routes.signUp}>
-              <Button>회원가입</Button>
-            </Link>
+            </IconButton>
           </InfoBox>
         )}
       </ButtonsBox>

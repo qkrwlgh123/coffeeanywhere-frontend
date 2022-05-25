@@ -3,9 +3,10 @@ import reset from 'styled-reset';
 
 export const lightTheme = {
   accent: '#0095f6',
-  bgColor: '#F3F4F6',
-  fontColor: 'rgb(38,38,38)',
+  bgColor: '#FFFFFF',
+  fontColor: 'black',
   borderColor: 'rgb(219,219,219)',
+  green: '#2ECC71',
 };
 
 export const darkTheme = {
@@ -26,7 +27,7 @@ export const GlobalStyles = createGlobalStyle`
     body {
         background-color:${(props) => props.theme.bgColor};
         font-size:14px;
-        font-family: sans-serif;
+        font-family: 'Noto Sans KR', sans-serif; 
         color: ${(props) => props.theme.fontColor};
     }
     a {
