@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const AvatarBox = styled.div``;
 
 const AvatarImg = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 30px;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
 `;
 
 const NoneAvatar = styled.div`

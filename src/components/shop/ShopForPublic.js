@@ -1,4 +1,5 @@
-import { faHeart, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faComments, faHeart } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,91 +8,83 @@ import SmallUserInfo from '../auth/SmallUserInfo';
 
 const ShopBox = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin: 25px 0px;
-  width: 900px;
-  @media (max-width: 800px) {
-    width: 80%;
-    flex-direction: column;
-  }
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #667080;
 `;
 
 const Name = styled.span`
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 400;
-
-  @media (max-width: 800px) {
-    margin: 15px 0px;
-  }
+  color: #1f2937;
 `;
 
 const Address = styled.span`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
-  @media (max-width: 800px) {
-    margin-top: -5px;
-    margin-bottom: 15px;
-  }
+  color: #1f2937;
+  margin-top: 8px;
 `;
 
 const ImageBox = styled.div`
-  width: 500px;
-  height: 300px;
-  @media (max-width: 1500px) {
-    width: 100%;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 250px;
+  margin-bottom: 15px;
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 15px;
+  object-fit: fill;
 `;
 
 const Texts = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 400px;
-  margin-left: 80px;
+  width: 100%;
+  padding: 0px 5px;
   @media (max-width: 800px) {
     margin-left: 5px;
   }
 `;
 
 const Icons = styled.div`
+  display: flex;
+  align-items: center;
   svg {
-    margin-right: 5px;
-    color: orange;
+    width: 24px;
+    height: 24px;
   }
   span {
-    color: rgb(194, 141, 75);
-    margin-right: 5px;
+    margin: 0px 4px;
+    font-size: 16px;
+    color: #1f2937;
   }
-`;
-
-const Description = styled.span`
-  font-size: 20px;
-  font-weight: 400;
-  margin: 15px 0px;
 `;
 
 const HashTagBox = styled.div`
   display: flex;
-  flex-direction: column;
-  @media (max-width: 800px) {
-    flex-direction: row;
-  }
+  margin-top: 8px;
 `;
 
 const HashTag = styled.div`
-  width: max-content;
-  border: 1px solid rgb(194, 141, 75);
-  border-radius: 5px;
-  padding: 6.4px 8px;
-  margin: 5px 0px;
-  color: rgb(194, 141, 75);
-  font-size: 15px;
+  margin-left: 4px;
+  color: #1f2937;
+  font-size: 14px;
+`;
+
+const OwnerInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
 `;
 
 function ShopForPublic(item) {
@@ -109,13 +102,6 @@ function ShopForPublic(item) {
           <Name>{item.name}</Name>
         </Link>
         <Address>{item.address}</Address>
-        <Icons>
-          <FontAwesomeIcon icon={faPen} size="1x" />
-          <span>{item.replys.length}</span>
-          <FontAwesomeIcon icon={faHeart} size="1x" />
-          <span>{item.likes.length}</span>
-        </Icons>
-        <Description>{item.description}</Description>
         <HashTagBox>
           {item.categories?.length > 0
             ? item.categories.map((item) => (
@@ -123,8 +109,19 @@ function ShopForPublic(item) {
               ))
             : null}
         </HashTagBox>
+        <OwnerInfo>
+          <SmallUserInfo
+            url={item?.user?.avatar}
+            username={item?.user?.username}
+          />
+          <Icons>
+            <FontAwesomeIcon icon={faHeart} size="1x" color="#D63031" />
+            <span>{item.likes.length} </span>
+            <FontAwesomeIcon icon={faComments} size="1x" color="#1f2937" />
+            <span>{item.replys.length} </span>
+          </Icons>
+        </OwnerInfo>
       </Texts>
-      <SmallUserInfo url={item?.user?.avatar} username={item?.user?.username} />
     </ShopBox>
   );
 }

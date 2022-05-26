@@ -1,20 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import ShopForPublic from '../components/shop/ShopForPublic';
 import { Link } from 'react-router-dom';
 import PublicListLayout from '../components/shop/PublicListLayout';
 import PageTitle from '../components/PageTitle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFire, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faFire,
+  faMagnifyingGlass,
+} from '@fortawesome/free-solid-svg-icons';
 import { faCalendarMinus } from '@fortawesome/free-regular-svg-icons';
 
 const MainImgBox = styled.div`
   display: flex;
-  justify-content: center;
   width: 100%;
-  padding-right: 230px;
   @media (max-width: 800px) {
     padding-right: 0px;
     margin-left: 50px;
@@ -28,7 +30,7 @@ const SearchBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 90px;
+  padding: 0px 40px;
   margin-top: -35px;
   @media (max-width: 800px) {
     flex-direction: column;
@@ -36,6 +38,11 @@ const SearchBar = styled.div`
 `;
 
 const SearchBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SearchInputBox = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -62,6 +69,18 @@ const SearchBoxBtn = styled.span`
   }
 `;
 
+const SearchMessageBox = styled.div`
+  padding: 32px 32px 0px 32px;
+`;
+
+const SearchMessage = styled.span`
+  color: #4b5563;
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-left: 8px;
+`;
+
 const SortBtnBox = styled.div`
   @media (max-width: 800px) {
     margin-top: 15px;
@@ -72,6 +91,7 @@ const TextsBox = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 120px;
+
   margin-top: 65px;
   margin-left: 20px;
 `;
@@ -99,8 +119,27 @@ const AnimationImgBox = styled.div`
 `;
 
 const Layout = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  margin: 48px;
+  /* Media Query for Laptops and Desktops */
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  /* Media Query for Tablet */
+  @media (min-width: 900px) and (max-width: 1279px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (min-width: 651px) and (max-width: 899px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  /* Media Query for Mobile */
+  @media (max-width: 650px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
 
   a {
     color: #212529;
@@ -127,8 +166,8 @@ const FetchMoreBtn = styled.div`
 `;
 
 const LIST_QUERY = gql`
-  query seeCoffeeShops($offset: Int) {
-    seeCoffeeShops(offset: $offset) {
+  query seeCoffeeShops($offset: Int, $keyword: String) {
+    seeCoffeeShops(offset: $offset, keyword: $keyword) {
       id
       name
       user {
@@ -157,13 +196,28 @@ const LIST_QUERY = gql`
 function PublicList() {
   const [inputFocus, setInputFocus] = useState('');
   const [sortByPopular, setSortByPopular] = useState(true);
+  const [inputValue, setInputValue] = useState('');
+  const [keyword, setKeyword] = useState('');
   const [list, setList] = useState([]);
-  const { loading, data, fetchMore } = useQuery(LIST_QUERY, {
+  const { loading, data, fetchMore, refetch } = useQuery(LIST_QUERY, {
     variables: {
       offset: 0,
+      keyword,
     },
     onCompleted: () => setList(data.seeCoffeeShops),
   });
+
+  const handleInputValue = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleSubmitValue = () => {
+    setKeyword(inputValue);
+  };
+
+  const handleClearInput = () => {
+    setKeyword('');
+  };
 
   const onFetchMore = () => {
     fetchMore({
@@ -200,15 +254,23 @@ function PublicList() {
       </MainImgBox>
       <SearchBar>
         <SearchBox>
-          <FontAwesomeIcon icon={faMagnifyingGlass} size="5x" color="#2ECC71" />
-          <SearchInput
-            type="text"
-            changeColor={inputFocus}
-            onFocus={() => setInputFocus(true)}
-            onBlur={() => setInputFocus(false)}
-          />
-          <SearchBoxBtn>검색</SearchBoxBtn>
-          <SearchBoxBtn>초기화</SearchBoxBtn>
+          <SearchInputBox>
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              size="5x"
+              color="#2ECC71"
+            />
+            <SearchInput
+              type="text"
+              changeColor={inputFocus}
+              value={inputValue}
+              onChange={handleInputValue}
+              onFocus={() => setInputFocus(true)}
+              onBlur={() => setInputFocus(false)}
+            />
+            <SearchBoxBtn onClick={handleSubmitValue}>검색</SearchBoxBtn>
+            <SearchBoxBtn onClick={handleClearInput}>초기화</SearchBoxBtn>
+          </SearchInputBox>
         </SearchBox>
         <SortBtnBox>
           <SearchBoxBtn
@@ -218,7 +280,6 @@ function PublicList() {
             <FontAwesomeIcon icon={faFire} />
             <span>인기</span>
           </SearchBoxBtn>
-
           <SearchBoxBtn
             sortByPopular={!sortByPopular}
             onClick={() => setSortByPopular(false)}
@@ -228,16 +289,20 @@ function PublicList() {
           </SearchBoxBtn>
         </SortBtnBox>
       </SearchBar>
+      <SearchMessageBox>
+        <FontAwesomeIcon icon={faCheck} size="2x" color="#2ECC71" />
+        <SearchMessage>상호명과 태그를 기반으로 검색합니다.</SearchMessage>
+      </SearchMessageBox>
       <Layout>
         {list?.map((item, index) => (
           <ShopForPublic key={index} {...item} />
         ))}
-        {loading ? null : (
-          <FetchMoreBtn>
-            <span onClick={onFetchMore}>더보기</span>
-          </FetchMoreBtn>
-        )}
       </Layout>
+      {loading ? null : (
+        <FetchMoreBtn>
+          <span onClick={onFetchMore}>더보기</span>
+        </FetchMoreBtn>
+      )}
     </PublicListLayout>
   );
 }
