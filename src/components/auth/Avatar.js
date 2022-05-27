@@ -14,8 +14,8 @@ const NoneAvatar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border: 1px solid rgb(219, 219, 219);
   background-color: rgb(250, 250, 250);
   border-radius: 30px;

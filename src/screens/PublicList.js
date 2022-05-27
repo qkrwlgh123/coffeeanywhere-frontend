@@ -13,10 +13,12 @@ import {
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarMinus } from '@fortawesome/free-regular-svg-icons';
+import { useEffect } from 'react';
 
 const MainImgBox = styled.div`
   display: flex;
   width: 100%;
+  justify-content: center;
   @media (max-width: 800px) {
     padding-right: 0px;
     margin-left: 50px;
@@ -28,12 +30,13 @@ const MainImgBox = styled.div`
 const SearchBar = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0px 40px;
+  position: relative;
+  left: 8%;
   margin-top: -35px;
   @media (max-width: 800px) {
     flex-direction: column;
+    left: 0;
   }
 `;
 
@@ -70,7 +73,13 @@ const SearchBoxBtn = styled.span`
 `;
 
 const SearchMessageBox = styled.div`
-  padding: 32px 32px 0px 32px;
+  padding-top: 32px;
+  position: relative;
+  left: 8%;
+  @media (max-width: 800px) {
+    flex-direction: column;
+    left: 0;
+  }
 `;
 
 const SearchMessage = styled.span`
@@ -79,12 +88,6 @@ const SearchMessage = styled.span`
   font-weight: 500;
   white-space: nowrap;
   margin-left: 8px;
-`;
-
-const SortBtnBox = styled.div`
-  @media (max-width: 800px) {
-    margin-top: 15px;
-  }
 `;
 
 const TextsBox = styled.div`
@@ -121,10 +124,12 @@ const AnimationImgBox = styled.div`
 const Layout = styled.div`
   display: grid;
   margin: 48px;
+
   /* Media Query for Laptops and Desktops */
   @media (min-width: 1280px) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
+    padding: 0px 130px;
   }
   /* Media Query for Tablet */
   @media (min-width: 900px) and (max-width: 1279px) {
@@ -149,25 +154,9 @@ const Layout = styled.div`
   }
 `;
 
-const FetchMoreBtn = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 550px;
-  text-align: center;
-  padding: 10px 0px;
-  border: 0.3px solid rgb(233, 236, 239);
-  span {
-    cursor: pointer;
-    font-size: 16px;
-    color: #868e96;
-  }
-`;
-
 const LIST_QUERY = gql`
-  query seeCoffeeShops($offset: Int, $keyword: String) {
-    seeCoffeeShops(offset: $offset, keyword: $keyword) {
+  query seeCoffeeShops($page: Int, $keyword: String) {
+    seeCoffeeShops(page: $page, keyword: $keyword) {
       id
       name
       user {
@@ -201,10 +190,10 @@ function PublicList() {
   const [list, setList] = useState([]);
   const { loading, data, fetchMore, refetch } = useQuery(LIST_QUERY, {
     variables: {
-      offset: 0,
+      page: 0,
       keyword,
     },
-    onCompleted: () => setList(data.seeCoffeeShops),
+    onCompleted: () => setList(data?.seeCoffeeShops),
   });
 
   const handleInputValue = (event) => {
@@ -222,14 +211,14 @@ function PublicList() {
   const onFetchMore = () => {
     fetchMore({
       variables: {
-        offset: data?.seeCoffeeShops.length,
+        page: data?.seeCoffeeShops.length,
+        keyword,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) {
           return prev;
         }
         if (fetchMoreResult.seeCoffeeShops.length === 0) {
-          alert('마지막 목록입니다');
           return;
         }
         return Object.assign({}, prev, {
@@ -241,6 +230,22 @@ function PublicList() {
       },
     });
   };
+
+  const handleScroll = () => {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+    if (scrollTop + clientHeight >= scrollHeight) {
+      onFetchMore();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
 
   return (
     <PublicListLayout>
@@ -272,37 +277,16 @@ function PublicList() {
             <SearchBoxBtn onClick={handleClearInput}>초기화</SearchBoxBtn>
           </SearchInputBox>
         </SearchBox>
-        <SortBtnBox>
-          <SearchBoxBtn
-            sortByPopular={sortByPopular}
-            onClick={() => setSortByPopular(true)}
-          >
-            <FontAwesomeIcon icon={faFire} />
-            <span>인기</span>
-          </SearchBoxBtn>
-          <SearchBoxBtn
-            sortByPopular={!sortByPopular}
-            onClick={() => setSortByPopular(false)}
-          >
-            <FontAwesomeIcon icon={faCalendarMinus} />
-            <span>최신</span>
-          </SearchBoxBtn>
-        </SortBtnBox>
       </SearchBar>
       <SearchMessageBox>
         <FontAwesomeIcon icon={faCheck} size="2x" color="#2ECC71" />
         <SearchMessage>상호명과 태그를 기반으로 검색합니다.</SearchMessage>
       </SearchMessageBox>
       <Layout>
-        {list?.map((item, index) => (
-          <ShopForPublic key={index} {...item} />
+        {data?.seeCoffeeShops?.map((item) => (
+          <ShopForPublic key={item.id} {...item} />
         ))}
       </Layout>
-      {loading ? null : (
-        <FetchMoreBtn>
-          <span onClick={onFetchMore}>더보기</span>
-        </FetchMoreBtn>
-      )}
     </PublicListLayout>
   );
 }
