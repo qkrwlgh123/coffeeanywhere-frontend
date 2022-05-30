@@ -126,22 +126,22 @@ const Layout = styled.div`
   margin: 48px;
 
   /* Media Query for Laptops and Desktops */
-  @media (min-width: 1280px) {
+  @media (min-width: 1501px) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
     padding: 0px 130px;
   }
   /* Media Query for Tablet */
-  @media (min-width: 900px) and (max-width: 1279px) {
+  @media (min-width: 900px) and (max-width: 1500px) {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
-  @media (min-width: 651px) and (max-width: 899px) {
+  @media (min-width: 551px) and (max-width: 899px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
   /* Media Query for Mobile */
-  @media (max-width: 650px) {
+  @media (max-width: 550px) {
     grid-template-columns: repeat(1, 1fr);
     gap: 1.5rem;
   }
@@ -184,16 +184,13 @@ const LIST_QUERY = gql`
 
 function PublicList() {
   const [inputFocus, setInputFocus] = useState('');
-  const [sortByPopular, setSortByPopular] = useState(true);
   const [inputValue, setInputValue] = useState('');
   const [keyword, setKeyword] = useState('');
-  const [list, setList] = useState([]);
   const { loading, data, fetchMore, refetch } = useQuery(LIST_QUERY, {
     variables: {
       page: 0,
       keyword,
     },
-    onCompleted: () => setList(data?.seeCoffeeShops),
   });
 
   const handleInputValue = (event) => {
@@ -218,9 +215,9 @@ function PublicList() {
         if (!fetchMoreResult) {
           return prev;
         }
-        if (fetchMoreResult.seeCoffeeShops.length === 0) {
-          return;
-        }
+        // if (fetchMoreResult.seeCoffeeShops.length === 0) {
+        //   return;
+        // }
         return Object.assign({}, prev, {
           seeCoffeeShops: [
             ...prev.seeCoffeeShops,

@@ -56,7 +56,7 @@ export const client = new ApolloClient({
   link: ApolloLink.from([uploadLink]),
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
     },
   },
 });

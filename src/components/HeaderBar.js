@@ -72,14 +72,12 @@ function HeaderBar() {
   const [changeLogintoGreen, setChangeLogintoGreen] = useState('');
   const navigate = useNavigate();
   const isLogged = useReactiveVar(isLoggedInvar);
-  const [profileImg, setProfileImg] = useState('');
   const { data } = useQuery(INFO_QUERY, {
     context: {
       headers: {
         token: localStorage.getItem(TOKEN),
       },
     },
-    onCompleted: () => setProfileImg(data?.seeProfile?.avatar),
   });
 
   return (
@@ -92,7 +90,7 @@ function HeaderBar() {
       <ButtonsBox>
         {isLogged ? (
           <InfoBox>
-            <Avatar url={profileImg} />
+            <Avatar url={data?.seeProfile?.avatar} />
             <Button onClick={() => logUserOut()}>로그아웃</Button>
           </InfoBox>
         ) : (

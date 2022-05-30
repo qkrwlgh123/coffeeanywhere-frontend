@@ -1,6 +1,9 @@
 import { gql, useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; // ♡
-import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons'; // ♥︎
+import {
+  faHeart as solidHeart,
+  faDeleteLeft,
+} from '@fortawesome/free-solid-svg-icons'; // ♥︎
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -22,17 +25,16 @@ const InfoBox = styled.div`
   justify-content: none;
 `;
 
-const TitleBox = styled.div`
+const HeaderBox = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
-`;
-
-const Name = styled.span`
-  width: 33%;
-  font-size: 1.5rem;
-  font-weight: 400;
+  svg {
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+  }
 `;
 
 const Addr = styled.span`
@@ -65,40 +67,63 @@ const Buttons = styled.div`
 
 const LikeBox = styled.div`
   display: flex;
-  width: 33%;
-  justify-content: flex-end;
   align-items: center;
-  font-size: 18px;
+  span {
+    font-size: 30px;
+    margin-left: 8px;
+  }
 `;
 
 const Like = styled.div`
   display: flex;
-  width: 33%;
-  justify-content: flex-end;
+  width: 48px;
+  height: 48px;
+  justify-content: center;
   align-items: center;
-  font-size: 18px;
+  background-color: #9ba3af;
+  border-radius: 9999px;
   cursor: pointer;
   span {
-    margin-left: 5px;
     -ms-user-select: none;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
   }
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 `;
 
 const InfoContainer = styled.div`
   display: flex;
-  @media (max-width: 800px) {
-    flex-direction: column;
-  }
+  flex-direction: column;
+`;
+
+const NameBox = styled.div`
+  width: 100%;
+  font-size: 30px;
+  margin-top: 48px;
+  font-weight: 500;
+  color: #1f2937;
+`;
+
+const Ownerbox = styled.div`
+  margin-top: 48px;
+  display: flex;
+  align-items: center;
+`;
+
+const OwnerName = styled.span`
+  font-size: 18px;
+  margin-left: 8px;
 `;
 
 const MapContainer = styled.div`
   margin-top: 35px;
-  width: 40%;
-  height: 40vh;
+  width: 50%;
+  height: 50vh;
   border-radius: 15px;
   @media (max-width: 800px) {
     width: 100%;
@@ -112,28 +137,28 @@ const TextsContainer = styled.div`
 `;
 
 export const HashtagBox = styled.div`
-  margin-top: 35px;
-  margin-left: 10px;
   display: flex;
+  margin-top: 48px;
+  padding-bottom: 32px;
+  border-bottom: 2px solid rgb(229, 231, 235);
   div {
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-    font-weight: 600;
+    background-color: #64748b;
+    padding: 8px 12px;
+    margin: 4px 0px 4px 8px;
+    border-radius: 12px;
     font-size: 16px;
-    margin-right: 10px;
-    background-color: #e5e7eb;
+    color: #ffffff;
   }
   span {
     width: 100%;
     text-align: center;
     font-size: 17px;
+    background-color: #64748b;
   }
 `;
 
 const DescriptionBox = styled.div`
-  margin-top: 35px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
 `;
 
@@ -148,30 +173,23 @@ const PhotoList = styled.div`
   }
 `;
 
-const Line = styled.div`
-  border-top: 1px solid rgb(229, 231, 235);
-  margin-top: 15px;
-  margin-bottom: -25px;
-  color: rgb(75, 88, 99);
-  font-weight: 500;
-  font-size: 17px;
-`;
-
 const ReplyInputBox = styled.div`
-  margin-top: 35px;
+  margin-top: 4px;
   font-size: 18px;
   font-weight: 500;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
 `;
 
 const ReplyInput = styled.input`
-  width: 90%;
-  height: 80px;
+  width: 100%;
+  height: 100px;
   margin-top: 20px;
   border-radius: 10px;
-  padding: 10px;
+  padding: 8px 12px;
   background-color: #fafafa;
+  background-color: #ffffff;
   border: 0.5px solid rgb(219, 219, 219);
   box-sizing: border-box;
   font-size: 18px;
@@ -188,23 +206,23 @@ const ReplyBtn = styled.input`
   cursor: pointer;
   font-weight: 400;
   text-align: center;
-  width: 5%;
+  width: 10%;
   padding: 10px 8px;
-  margin: 15px 0px;
+  margin: 16px 0px;
   font-size: 18px;
   border-radius: 8px;
   color: ${(props) =>
     props.disabled ? 'rgb(75, 85, 99)' : 'rgb(229, 231, 235)'};
   background-color: ${(props) =>
-    props.disabled ? 'rgb(209, 213, 219)' : props.theme.accent};
+    props.disabled ? 'rgb(209, 213, 219)' : '#475569'};
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const CommentsLength = styled.span`
   display: block;
-  font-size: 17px;
-  font-weight: 520;
-  margin: 30px 0px;
+  font-size: 24px;
+  color: #1f2937;
+  margin-top: 48px;
 `;
 
 const EmptyPhotoBox = styled.div`
@@ -228,20 +246,42 @@ const Photoimg = styled.img`
 const ReplyBox = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 15px 20px;
+  margin: 5px 0px;
 `;
 
 const Reply = styled.div`
+  width: 100%;
+  padding: 12px;
+  background-color: rgb(249, 250, 251);
+  border-radius: 12px;
+  margin-bottom: 10px;
+`;
+
+const ReplyInfo = styled.div`
   display: flex;
-  border-bottom: 1px solid rgb(229, 231, 235);
-  margin-bottom: 40px;
-  padding-bottom: 45px;
+  align-items: center;
+`;
+
+const InfoText = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+`;
+
+const ReplyOwner = styled.span`
+  font-size: 18px;
+`;
+
+const ReplyDate = styled.div`
+  font-size: 14px;
+  color: #9ca3af;
+  margin-top: 5px;
 `;
 
 const ReplyContent = styled.div`
-  font-size: 18px;
-  padding: 25px 0px 40px 0px;
-  margin-left: 25px;
+  font-size: 16px;
+
+  margin: 24px 36px;
 `;
 
 export const Message = styled.span`
@@ -281,6 +321,9 @@ const SHOP_QUERY = gql`
             avatar
           }
           createdAt
+        }
+        likes {
+          like
         }
         isLike
       }
@@ -334,12 +377,6 @@ function ShopInfo() {
   const navigate = useNavigate();
   const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
-  const [list, setList] = useState([]);
-  const [address, setAddress] = useState('');
-  const [description, setDescription] = useState('한줄평을 추가하세요');
-  const [photos, setPhotos] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [replyList, setReplyList] = useState([]);
 
   const { data, loading, refetch } = useQuery(SHOP_QUERY, {
     variables: {
@@ -351,18 +388,11 @@ function ShopInfo() {
       },
     },
     onCompleted: () => {
-      if (data) {
-        setIsMe(data?.seeCoffeeShop?.shop?.user?.username === userName);
-        setIsLike(data?.seeCoffeeShop?.shop?.isLike);
-        setList(data.seeCoffeeShop.shop);
-        MapScript(data.seeCoffeeShop.shop);
-        setCategories(data.seeCoffeeShop.shop.categories);
-        setDescription(data.seeCoffeeShop.shop.description);
-        setPhotos(data.seeCoffeeShop.shop.photos);
-        setReplyList(data.seeCoffeeShop.shop.replys);
-        setAddress(data.seeCoffeeShop.shop.address);
-      }
+      setIsMe(data?.seeCoffeeShop?.shop?.user?.username === userName);
+      setIsLike(data?.seeCoffeeShop?.shop?.isLike);
+      MapScript(data?.seeCoffeeShop.shop);
     },
+    fetchPolicy: 'no-cache',
   });
 
   const [addLike] = useMutation(ADD_LIKE, {
@@ -452,12 +482,12 @@ function ShopInfo() {
 
   return (
     <InfoLayout>
-      <PageTitle title={`${list?.name}`} />
+      <PageTitle title={`${data?.seeCoffeeShop?.shop?.name}`} />
       {message === '' && !loading ? (
         <InfoBox>
-          <TitleBox>
-            <Name>{list?.name}</Name>
-            <Addr>{address}</Addr>
+          <HeaderBox>
+            <FontAwesomeIcon icon={faDeleteLeft} color="#1F2937" size="3x" />
+
             {isMe ? (
               <Buttons isMe={isMe}>
                 <Link to={`/edit/${id}`} reloadDocument>
@@ -472,41 +502,35 @@ function ShopInfo() {
                 {likeMessage}
                 <Like onClick={handleLike}>
                   {!isLike || !isLogged ? (
-                    <FontAwesomeIcon
-                      icon={regularHeart}
-                      color="orange"
-                      size="2x"
-                    />
+                    <FontAwesomeIcon icon={regularHeart} color="1F2937" />
                   ) : (
-                    <FontAwesomeIcon
-                      icon={solidHeart}
-                      color="orange"
-                      size="2x"
-                    />
+                    <FontAwesomeIcon icon={solidHeart} color="1F2937" />
                   )}
-                  <span>찜하기</span>
                 </Like>
+                <span>{data?.seeCoffeeShop.shop.likes.length}</span>
               </LikeBox>
             )}
-          </TitleBox>
+          </HeaderBox>
           <InfoContainer>
+            <NameBox>{data?.seeCoffeeShop?.shop.name}</NameBox>
+            <Ownerbox>
+              <Avatar url={data?.seeCoffeeShop.shop.user.avatar} />
+              <OwnerName>{data?.seeCoffeeShop.shop.user.username}</OwnerName>
+            </Ownerbox>
             <MapContainer id="myMap"></MapContainer>
-            <TextsContainer>
-              <HashtagBox>
-                {categories.length !== 0 ? (
-                  categories.map((item) => (
-                    <div key={item.name}>{item.name}</div>
-                  ))
-                ) : (
-                  <span>작성된 해쉬태그가 없습니다</span>
-                )}
-              </HashtagBox>
-              <DescriptionBox>{description}</DescriptionBox>
-            </TextsContainer>
+            <HashtagBox>
+              {data?.seeCoffeeShop.shop.categories.length !== 0 ? (
+                data?.seeCoffeeShop.shop.categories.map((item) => (
+                  <div key={item.name}>{item.name}</div>
+                ))
+              ) : (
+                <span>작성된 해쉬태그가 없습니다</span>
+              )}
+            </HashtagBox>
           </InfoContainer>
           <PhotoList>
-            {photos.length > 0 ? (
-              photos.map((item) => (
+            {data?.seeCoffeeShop?.shop.photos.length > 0 ? (
+              data?.seeCoffeeShop?.shop.photos.map((item) => (
                 <PhotoBox key={item.url}>
                   <Photoimg key={item.url} src={item.url} />
                 </PhotoBox>
@@ -517,10 +541,15 @@ function ShopInfo() {
               </EmptyPhotoBox>
             )}
           </PhotoList>
-          <Line></Line>
+          <DescriptionBox>
+            {data?.seeCoffeeShop?.shop.description}
+          </DescriptionBox>
+          <CommentsLength>
+            {data?.seeCoffeeShop?.shop?.replys?.length} 개의 댓글이 있습니다.
+          </CommentsLength>
           <ReplyInputBox>
             <ReplyInput
-              placeholder={isLogged ? '댓글 작성' : '로그인이 필요합니다.'}
+              placeholder={isLogged ? '' : '로그인이 필요합니다.'}
               disabled={!isLogged}
               value={reply}
               onChange={handleReply}
@@ -535,18 +564,29 @@ function ShopInfo() {
             <ReplyBtn
               disabled={reply.length < 2 || !isLogged}
               onClick={submitReply}
-              value="등록"
+              value="댓글 등록"
             />
           </ReplyInputBox>
-          <CommentsLength>댓글 {replyList?.length}</CommentsLength>
+
           <ReplyBox>
-            {replyList?.length > 0 ? (
-              replyList.map((item) => (
+            {data?.seeCoffeeShop?.shop?.replys?.length > 0 ? (
+              data?.seeCoffeeShop?.shop?.replys?.map((item) => (
                 <Reply>
-                  <SmallUserInfo
-                    url={item.user.avatar}
-                    username={item.user.username}
-                  />
+                  <ReplyInfo>
+                    <Avatar url={item.user.avatar} />
+                    <InfoText>
+                      <ReplyOwner>{item.user.username}</ReplyOwner>
+                      <ReplyDate>
+                        {new Intl.DateTimeFormat('ko-KR', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        }).format(item.createdAt)}
+                      </ReplyDate>
+                    </InfoText>
+                  </ReplyInfo>
                   <ReplyContent>{item.content}</ReplyContent>
                 </Reply>
               ))

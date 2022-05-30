@@ -12,7 +12,8 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1500px;
+  max-width: 1000px;
+  margin-top: 150px;
 `;
 
 function InfoLayout({ children }) {
