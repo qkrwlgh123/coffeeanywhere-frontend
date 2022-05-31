@@ -3,6 +3,8 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'; /
 import {
   faHeart as solidHeart,
   faDeleteLeft,
+  faAngleLeft,
+  faAngleRight,
 } from '@fortawesome/free-solid-svg-icons'; // ♥︎
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
@@ -10,8 +12,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { isLoggedInvar, TOKEN } from '../apollo';
 import Avatar from '../components/auth/Avatar';
-import SmallUserInfo from '../components/auth/SmallUserInfo';
-
 import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import MapScript from '../components/shop/MapScript';
@@ -31,8 +31,8 @@ const HeaderBox = styled.div`
   align-items: center;
   width: 100%;
   svg {
-    width: 45px;
-    height: 45px;
+    width: 48px;
+    height: 48px;
     cursor: pointer;
   }
 `;
@@ -71,6 +71,7 @@ const LikeBox = styled.div`
   span {
     font-size: 30px;
     margin-left: 8px;
+    color: #1f2937;
   }
 `;
 
@@ -103,7 +104,7 @@ const InfoContainer = styled.div`
 
 const NameBox = styled.div`
   width: 100%;
-  font-size: 30px;
+  font-size: 48px;
   margin-top: 48px;
   font-weight: 500;
   color: #1f2937;
@@ -113,17 +114,29 @@ const Ownerbox = styled.div`
   margin-top: 48px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+`;
+
+const Owner = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const OwnerName = styled.span`
-  font-size: 18px;
+  font-size: 24px;
   margin-left: 8px;
+  color: #1f2937;
+`;
+
+const Date = styled.span`
+  font-size: 24px;
+  color: #64748b;
 `;
 
 const MapContainer = styled.div`
   margin-top: 35px;
-  width: 50%;
-  height: 50vh;
+  width: 40%;
+  height: 30vh;
   border-radius: 15px;
   @media (max-width: 800px) {
     width: 100%;
@@ -159,18 +172,16 @@ export const HashtagBox = styled.div`
 
 const DescriptionBox = styled.div`
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 400;
+  margin: 50px 0px;
 `;
 
 const PhotoList = styled.div`
-  margin-top: 35px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 5px;
-  @media (max-width: 800px) {
-    display: flex;
-    flex-direction: column;
-  }
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 500px;
+  margin: 30px 0px;
 `;
 
 const ReplyInputBox = styled.div`
@@ -225,22 +236,49 @@ const CommentsLength = styled.span`
   margin-top: 48px;
 `;
 
-const EmptyPhotoBox = styled.div`
-  width: 200%;
-  text-align: center;
-  font-size: 17px;
+const PhotoBox = styled.div`
+  width: 860px;
+  height: 500px;
 `;
 
-const PhotoBox = styled.div`
-  width: 90%;
-  height: 30vh;
-  padding: 12px;
+const PhotoSelectedBox = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  svg {
+    cursor: pointer;
+    color: rgb(33, 37, 41);
+    width: 15px;
+    height: 26px;
+  }
 `;
 
 const Photoimg = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 15px;
+  border-radius: 8px;
+  width: 800px;
+  height: 500px;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  margin: 0px 12px;
+`;
+
+const PhotoCircleBox = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 16px 0px;
+  margin-top: -40px;
+`;
+
+const PhotoCircle = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: ${(props) => (props.active ? '#FFFFFF' : '#848384')};
+  margin: 0px 4px;
+  cursor: pointer;
 `;
 
 const ReplyBox = styled.div`
@@ -320,12 +358,14 @@ const SHOP_QUERY = gql`
             username
             avatar
           }
-          createdAt
         }
+
         likes {
           like
         }
         isLike
+        createdAt
+        updatedAt
       }
     }
   }
@@ -377,6 +417,19 @@ function ShopInfo() {
   const navigate = useNavigate();
   const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
+  const [photoIndex, setPhotoIndex] = useState(0);
+
+  const handlePhotoLeft = () => {
+    if (photoIndex !== 0) {
+      setPhotoIndex((current) => current - 1);
+    }
+  };
+
+  const handlePhotoRight = () => {
+    if (photoIndex !== data?.seeCoffeeShop.shop.photos.length - 1) {
+      setPhotoIndex((current) => current + 1);
+    }
+  };
 
   const { data, loading, refetch } = useQuery(SHOP_QUERY, {
     variables: {
@@ -487,7 +540,6 @@ function ShopInfo() {
         <InfoBox>
           <HeaderBox>
             <FontAwesomeIcon icon={faDeleteLeft} color="#1F2937" size="3x" />
-
             {isMe ? (
               <Buttons isMe={isMe}>
                 <Link to={`/edit/${id}`} reloadDocument>
@@ -511,11 +563,59 @@ function ShopInfo() {
               </LikeBox>
             )}
           </HeaderBox>
+          <PhotoList>
+            {data?.seeCoffeeShop.shop.photos.length > 0 ? (
+              <PhotoBox>
+                <PhotoSelectedBox>
+                  <FontAwesomeIcon
+                    icon={faAngleLeft}
+                    onClick={handlePhotoLeft}
+                  />
+                  <Photoimg
+                    src={data?.seeCoffeeShop.shop.photos[photoIndex].url}
+                  />
+                  <FontAwesomeIcon
+                    icon={faAngleRight}
+                    onClick={handlePhotoRight}
+                  />
+                </PhotoSelectedBox>
+                <PhotoCircleBox>
+                  {data?.seeCoffeeShop.shop.photos.map((item, index) => (
+                    <PhotoCircle
+                      key={item.url}
+                      active={index === photoIndex}
+                    ></PhotoCircle>
+                  ))}
+                </PhotoCircleBox>
+              </PhotoBox>
+            ) : (
+              <span>첨부된 사진이 없습니다.</span>
+            )}
+          </PhotoList>
           <InfoContainer>
             <NameBox>{data?.seeCoffeeShop?.shop.name}</NameBox>
             <Ownerbox>
-              <Avatar url={data?.seeCoffeeShop.shop.user.avatar} />
-              <OwnerName>{data?.seeCoffeeShop.shop.user.username}</OwnerName>
+              <Owner>
+                <Avatar url={data?.seeCoffeeShop.shop.user.avatar} />
+                <OwnerName>{data?.seeCoffeeShop.shop.user.username}</OwnerName>
+              </Owner>
+              <Date>
+                {data?.seeCoffeeShop.shop.updatedAt
+                  ? new Intl.DateTimeFormat('ko-KR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }).format(data?.seeCoffeeShop.shop.updatedAt)
+                  : new Intl.DateTimeFormat('ko-KR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }).format(data?.seeCoffeeShop.shop.createdAt)}
+              </Date>
             </Ownerbox>
             <MapContainer id="myMap"></MapContainer>
             <HashtagBox>
@@ -528,19 +628,6 @@ function ShopInfo() {
               )}
             </HashtagBox>
           </InfoContainer>
-          <PhotoList>
-            {data?.seeCoffeeShop?.shop.photos.length > 0 ? (
-              data?.seeCoffeeShop?.shop.photos.map((item) => (
-                <PhotoBox key={item.url}>
-                  <Photoimg key={item.url} src={item.url} />
-                </PhotoBox>
-              ))
-            ) : (
-              <EmptyPhotoBox>
-                <span>첨부된 사진이 없습니다</span>
-              </EmptyPhotoBox>
-            )}
-          </PhotoList>
           <DescriptionBox>
             {data?.seeCoffeeShop?.shop.description}
           </DescriptionBox>
@@ -571,7 +658,7 @@ function ShopInfo() {
           <ReplyBox>
             {data?.seeCoffeeShop?.shop?.replys?.length > 0 ? (
               data?.seeCoffeeShop?.shop?.replys?.map((item) => (
-                <Reply>
+                <Reply key={item.content}>
                   <ReplyInfo>
                     <Avatar url={item.user.avatar} />
                     <InfoText>
