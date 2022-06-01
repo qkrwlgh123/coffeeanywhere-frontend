@@ -7,6 +7,7 @@ import {
   faAngleRight,
 } from '@fortawesome/free-solid-svg-icons'; // ♥︎
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -16,6 +17,8 @@ import PageTitle from '../components/PageTitle';
 import InfoLayout from '../components/shop/InfoLayout';
 import MapScript from '../components/shop/MapScript';
 import routes from '../routes';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 const InfoBox = styled.div`
   margin-top: 5%;
@@ -38,11 +41,9 @@ const HeaderBox = styled.div`
 `;
 
 const Addr = styled.span`
-  display: flex;
-  justify-content: center;
-  font-weight: 500;
-  font-size: 18px;
-  width: 33%;
+  font-size: 20px;
+  margin: 30px 0px -15px 0px;
+  color: #1f2937;
 `;
 
 const Buttons = styled.div`
@@ -135,18 +136,13 @@ const Date = styled.span`
 
 const MapContainer = styled.div`
   margin-top: 35px;
-  width: 40%;
-  height: 30vh;
-  border-radius: 15px;
+  width: 50%;
+  height: 40vh;
+  border-radius: 8px;
   @media (max-width: 800px) {
     width: 100%;
     height: 50vh;
   }
-`;
-
-const TextsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 
 export const HashtagBox = styled.div`
@@ -173,15 +169,40 @@ export const HashtagBox = styled.div`
 const DescriptionBox = styled.div`
   font-size: 20px;
   font-weight: 400;
-  margin: 50px 0px;
+  margin: 50px 0px 100px 0px;
 `;
 
-const PhotoList = styled.div`
+const PhotoWrapper = styled.div`
+  margin: 30px 0px -30px 0px;
   display: flex;
-  justify-content: center;
+  align-items: center;
+  svg {
+    width: 20px;
+    height: 25px;
+    color: #212529;
+    margin: 0px 12px;
+    cursor: pointer;
+  }
+  svg:hover {
+    color: #c4c7cc;
+  }
+`;
+
+const PhotoSelectedBox = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const Photoimg = styled.img`
+  border-radius: 8px;
   width: 100%;
   height: 500px;
-  margin: 30px 0px;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 
 const ReplyInputBox = styled.div`
@@ -234,51 +255,6 @@ const CommentsLength = styled.span`
   font-size: 24px;
   color: #1f2937;
   margin-top: 48px;
-`;
-
-const PhotoBox = styled.div`
-  width: 860px;
-  height: 500px;
-`;
-
-const PhotoSelectedBox = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  svg {
-    cursor: pointer;
-    color: rgb(33, 37, 41);
-    width: 15px;
-    height: 26px;
-  }
-`;
-
-const Photoimg = styled.img`
-  border-radius: 8px;
-  width: 800px;
-  height: 500px;
-  -ms-user-select: none;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  margin: 0px 12px;
-`;
-
-const PhotoCircleBox = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 16px 0px;
-  margin-top: -40px;
-`;
-
-const PhotoCircle = styled.div`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: ${(props) => (props.active ? '#FFFFFF' : '#848384')};
-  margin: 0px 4px;
-  cursor: pointer;
 `;
 
 const ReplyBox = styled.div`
@@ -418,16 +394,25 @@ function ShopInfo() {
   const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [photoStage, setPhotoStage] = useState('');
 
   const handlePhotoLeft = () => {
     if (photoIndex !== 0) {
       setPhotoIndex((current) => current - 1);
+      setPhotoStage('left');
+    } else {
+      setPhotoIndex(data?.seeCoffeeShop.shop.photos.length - 1);
+      setPhotoStage('left');
     }
   };
 
   const handlePhotoRight = () => {
     if (photoIndex !== data?.seeCoffeeShop.shop.photos.length - 1) {
       setPhotoIndex((current) => current + 1);
+      setPhotoStage('right');
+    } else {
+      setPhotoIndex(0);
+      setPhotoStage('right');
     }
   };
 
@@ -533,6 +518,8 @@ function ShopInfo() {
     });
   };
 
+  useEffect(() => {}, [photoIndex]);
+
   return (
     <InfoLayout>
       <PageTitle title={`${data?.seeCoffeeShop?.shop?.name}`} />
@@ -563,35 +550,22 @@ function ShopInfo() {
               </LikeBox>
             )}
           </HeaderBox>
-          <PhotoList>
-            {data?.seeCoffeeShop.shop.photos.length > 0 ? (
-              <PhotoBox>
+          <PhotoWrapper>
+            <FontAwesomeIcon onClick={handlePhotoLeft} icon={faAngleLeft} />
+            <Carousel
+              selectedItem={photoIndex}
+              showStatus={false}
+              infiniteLoop
+              showArrows={false}
+            >
+              {data?.seeCoffeeShop.shop.photos.map((item) => (
                 <PhotoSelectedBox>
-                  <FontAwesomeIcon
-                    icon={faAngleLeft}
-                    onClick={handlePhotoLeft}
-                  />
-                  <Photoimg
-                    src={data?.seeCoffeeShop.shop.photos[photoIndex].url}
-                  />
-                  <FontAwesomeIcon
-                    icon={faAngleRight}
-                    onClick={handlePhotoRight}
-                  />
+                  <Photoimg src={item.url} />
                 </PhotoSelectedBox>
-                <PhotoCircleBox>
-                  {data?.seeCoffeeShop.shop.photos.map((item, index) => (
-                    <PhotoCircle
-                      key={item.url}
-                      active={index === photoIndex}
-                    ></PhotoCircle>
-                  ))}
-                </PhotoCircleBox>
-              </PhotoBox>
-            ) : (
-              <span>첨부된 사진이 없습니다.</span>
-            )}
-          </PhotoList>
+              ))}
+            </Carousel>
+            <FontAwesomeIcon onClick={handlePhotoRight} icon={faAngleRight} />
+          </PhotoWrapper>
           <InfoContainer>
             <NameBox>{data?.seeCoffeeShop?.shop.name}</NameBox>
             <Ownerbox>
@@ -617,6 +591,7 @@ function ShopInfo() {
                     }).format(data?.seeCoffeeShop.shop.createdAt)}
               </Date>
             </Ownerbox>
+            <Addr>{data?.seeCoffeeShop.shop.address}</Addr>
             <MapContainer id="myMap"></MapContainer>
             <HashtagBox>
               {data?.seeCoffeeShop.shop.categories.length !== 0 ? (
