@@ -12,6 +12,8 @@ import {
   faRightToBracket,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
+import { useRef } from 'react';
+import { useEffect } from 'react';
 
 const HeaderBox = styled.div`
   display: flex;
@@ -76,7 +78,7 @@ const ModalBox = styled.div`
   display: ${(props) => (props.activeModal ? 'flex' : 'none')};
   flex-direction: column;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px;
-  z-index: 999;
+  z-index: 100;
   span {
     color: #1f2937;
     margin-top: 24px;
@@ -100,18 +102,32 @@ const INFO_QUERY = gql`
 
 function HeaderBar() {
   const navigate = useNavigate();
+  const el = useRef();
   const [activeModal, setActiveModal] = useState(false);
   const [changeNewShoptoGreen, setChangeNewShoptoGreen] = useState('');
   const [changeLogintoGreen, setChangeLogintoGreen] = useState('');
   const [changeEllipsistoGreen, setChangeEllipsistoGreen] = useState('');
   const isLogged = useReactiveVar(isLoggedInvar);
-  const userName = localStorage.getItem(NAME);
+
   const { data } = useQuery(INFO_QUERY, {
     context: {
       headers: {
         token: localStorage.getItem(TOKEN),
       },
     },
+  });
+
+  const handleDeActiveModal = (event) => {
+    if (activeModal && (!el.current || !el.current.contains(event.target))) {
+      setActiveModal(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('click', handleDeActiveModal);
+    return () => {
+      window.removeEventListener('click', handleDeActiveModal);
+    };
   });
 
   return (
@@ -138,7 +154,6 @@ function HeaderBar() {
               onMouseOver={() => setChangeEllipsistoGreen(true)}
               onMouseLeave={() => setChangeEllipsistoGreen(false)}
               onClick={() => setActiveModal((current) => !current)}
-              onBlur={() => setActiveModal(false)}
             >
               <Avatar url={data?.seeProfile?.avatar} />
               <FontAwesomeIcon icon={faEllipsisVertical} />

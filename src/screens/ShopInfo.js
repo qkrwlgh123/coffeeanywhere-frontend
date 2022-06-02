@@ -14,7 +14,6 @@ import styled from 'styled-components';
 import { isLoggedInvar, TOKEN } from '../apollo';
 import Avatar from '../components/auth/Avatar';
 import PageTitle from '../components/PageTitle';
-
 import MapScript from '../components/shop/MapScript';
 import routes from '../routes';
 import { Carousel } from 'react-responsive-carousel';
@@ -330,6 +329,7 @@ const SHOP_QUERY = gql`
           name
         }
         replys {
+          id
           content
           user {
             username
@@ -634,7 +634,7 @@ function ShopInfo() {
           <ReplyBox>
             {data?.seeCoffeeShop?.shop?.replys?.length > 0 ? (
               data?.seeCoffeeShop?.shop?.replys?.map((item) => (
-                <Reply key={item.content}>
+                <Reply key={item.id}>
                   <ReplyInfo>
                     <Avatar url={item.user.avatar} />
                     <InfoText>
