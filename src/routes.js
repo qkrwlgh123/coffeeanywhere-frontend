@@ -6,6 +6,7 @@ const routes = {
   shopInfo: '/:id',
   editShop: '/edit/:id',
   publiclist: '/public',
+  myLikeList: '/likelist/mine',
   profile: '/profile/:name',
 };
 export default routes;

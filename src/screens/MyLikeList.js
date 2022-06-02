@@ -3,62 +3,11 @@ import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import PageTitle from '../components/PageTitle';
 import { useState } from 'react';
+
 import { faUser } from '@fortawesome/free-regular-svg-icons'; // ♡
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TOKEN } from '../apollo';
-import Avatar from '../components/auth/Avatar';
 import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
-
-const Title = styled.span`
-  font-size: 36px;
-`;
-
-const UserInfoBox = styled.div`
-  margin: 50px 0px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  div:first-child {
-    img {
-      width: 126px;
-      height: 128px;
-      border-radius: 9999px;
-    }
-    div {
-      width: 126px;
-      height: 128px;
-      border-radius: 9999px;
-    }
-  }
-`;
-
-const UserTextsBox = styled.div`
-  margin-left: 48px;
-`;
-
-const UserName = styled.span`
-  font-size: 24px;
-  color: #1f2937;
-`;
-
-const UserInfos = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-  span {
-    font-size: 18px;
-    color: #1f2937;
-  }
-  span:last-child {
-    margin-left: 16px;
-  }
-`;
-
-const UserDescribe = styled.div`
-  margin-top: 20px;
-  font-size: 18px;
-  color: #1f2937;
-`;
 
 const ListBox = styled.div`
   display: flex;
@@ -88,6 +37,43 @@ const Shops = styled.div`
   }
 `;
 
+const UserInfoBox = styled.div`
+  margin-top: 150px;
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const UserImg = styled.img`
+  width: 150px;
+  height: 150px;
+  border-radius: 70px;
+`;
+
+const UserNoneImg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+`;
+
+const UserName = styled.div`
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  border: 0px solid rgb(229, 231, 235);
+  border-radius: 9999px;
+  width: 80%;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px;
+  padding: 30px 40px;
+  font-size: 30px;
+  font-weight: 500;
+`;
+
 const Shop = styled.div`
   display: flex;
   flex-direction: column;
@@ -115,6 +101,7 @@ const EmptyPhoto = styled.div`
 
 const NameBox = styled.div`
   display: flex;
+
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
@@ -134,83 +121,64 @@ const NameBox = styled.div`
 `;
 
 const PROFILE_QUERY = gql`
-  query seeUser($username: String) {
-    seeUser(username: $username) {
+  query seeMyProfile($username: String) {
+    seeMyProfile(username: $username) {
       ok
       error
       user {
         username
         avatar
-        likes {
+      }
+      likes {
+        coffeeShop {
           id
+          name
+          photos {
+            id
+            url
+          }
         }
       }
-      shop {
-        id
-        name
-        photos {
-          id
-          url
-        }
-      }
-      followers {
-        username
-      }
-      following {
-        username
-      }
-      totalFollowers
-      totalFollowing
     }
   }
 `;
 
-function Profile() {
+function LikeList() {
   const { name } = useParams();
   const navigate = useNavigate();
   const [active, setActive] = useState(false);
 
   const { data } = useQuery(PROFILE_QUERY, {
-    variables: {
-      username: name,
+    context: {
+      headers: {
+        token: localStorage.getItem(TOKEN),
+      },
     },
     fetchPolicy: 'no-cache',
   });
-
+  console.log(data);
   return (
     <ProfileInfoLayout>
       <PageTitle title={`${name}님의 관심 목록`} />
-      <Title>프로필</Title>
-      <UserInfoBox>
-        <Avatar url={data?.seeUser.user.avatar} />
-        <UserTextsBox>
-          <UserName>{data?.seeUser.user.username}</UserName>
-          <UserInfos>
-            <span>게시물 {data?.seeUser.shop.length}개</span>
-            <span>좋아요 {data?.seeUser.user.likes?.length}개</span>
-          </UserInfos>
-          <UserDescribe>소개글</UserDescribe>
-        </UserTextsBox>
-      </UserInfoBox>
       <ListBox>
-        {data?.seeUser.shop?.length > 0 ? (
+        {data?.seeMyProfile.likes?.length > 0 ? (
           <Shops>
-            {data?.seeUser.shop?.map((item) => (
+            {data?.seeMyProfile.likes?.map((item) => (
               <Shop
-                onMouseOver={() => setActive(item?.id)}
+                onMouseOver={() => setActive(item?.coffeeShop.id)}
                 onMouseOut={() => setActive(0)}
-                key={item?.id}
-                onClick={() => navigate(`/${item?.id}`)}
+                key={item?.coffeeShop.id}
+                onClick={() => navigate(`/${item?.coffeeShop.id}`)}
               >
-                {item.photos.length > 0 ? (
-                  <Img src={item.photos[0].url} />
+                {item?.coffeeShop.photos?.length > 0 ? (
+                  <Img src={item?.coffeeShop?.photos[0].url} />
                 ) : (
                   <EmptyPhoto>
-                    <span key={item.id}>사진을 추가해주세요</span>
+                    <span key={item?.coffeeShop.id}>사진을 추가해주세요</span>
                   </EmptyPhoto>
                 )}
-                <NameBox active={active === item.id}>
-                  <span>{item.name}</span>
+                <NameBox active={active === item?.coffeeShop.id}>
+                  <span>{item?.coffeeShop.name}</span>
                 </NameBox>
               </Shop>
             ))}
@@ -222,4 +190,4 @@ function Profile() {
     </ProfileInfoLayout>
   );
 }
-export default Profile;
+export default LikeList;

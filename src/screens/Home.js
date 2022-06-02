@@ -4,7 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import PageTitle from '../components/PageTitle';
 import { useState } from 'react';
-import InfoLayout from '../components/shop/InfoLayout';
+import ShopInfoLayout from '../components/shop/ShopInfoLayout';
 
 const ListBox = styled.div`
   display: flex;
@@ -105,7 +105,7 @@ function Home() {
     onCompleted: () => setList(data),
   });
   return (
-    <InfoLayout>
+    <ShopInfoLayout>
       <PageTitle title="My list" />
       <ListBox>
         {list?.seeMyShopList?.length > 0 ? (
@@ -134,7 +134,7 @@ function Home() {
           <span>Add a Shop!</span>
         )}
       </ListBox>
-    </InfoLayout>
+    </ShopInfoLayout>
   );
 }
 export default Home;

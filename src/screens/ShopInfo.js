@@ -14,11 +14,12 @@ import styled from 'styled-components';
 import { isLoggedInvar, TOKEN } from '../apollo';
 import Avatar from '../components/auth/Avatar';
 import PageTitle from '../components/PageTitle';
-import InfoLayout from '../components/shop/InfoLayout';
+
 import MapScript from '../components/shop/MapScript';
 import routes from '../routes';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import ShopInfoLayout from '../components/shop/ShopInfoLayout';
 
 const InfoBox = styled.div`
   margin-top: 5%;
@@ -42,7 +43,7 @@ const HeaderBox = styled.div`
 
 const Addr = styled.span`
   font-size: 20px;
-  margin: 30px 0px -15px 0px;
+  margin: 60px 0px -15px 0px;
   color: #1f2937;
 `;
 
@@ -521,7 +522,7 @@ function ShopInfo() {
   useEffect(() => {}, [photoIndex]);
 
   return (
-    <InfoLayout>
+    <ShopInfoLayout>
       <PageTitle title={`${data?.seeCoffeeShop?.shop?.name}`} />
       {message === '' && !loading ? (
         <InfoBox>
@@ -660,7 +661,7 @@ function ShopInfo() {
       ) : (
         <Message>{message}</Message>
       )}
-    </InfoLayout>
+    </ShopInfoLayout>
   );
 }
 export default ShopInfo;

@@ -6,10 +6,10 @@ const UserInfo = styled.div`
   display: flex;
   align-items: center;
   a {
-    color: black;
+    color: #1f2937;
   }
   a:visited {
-    color: black;
+    color: #1f2937;
   }
 `;
 

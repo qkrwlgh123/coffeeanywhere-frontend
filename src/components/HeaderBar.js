@@ -1,7 +1,7 @@
 import { gql, useQuery, useReactiveVar } from '@apollo/client';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { isLoggedInvar, logUserOut } from '../apollo';
+import { isLoggedInvar, logUserOut, NAME } from '../apollo';
 import routes from './../routes';
 import Avatar from './auth/Avatar';
 import { TOKEN } from '../apollo';
@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPenToSquare,
   faRightToBracket,
+  faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 
 const HeaderBox = styled.div`
@@ -52,6 +53,36 @@ const IconButton = styled.div`
   }
 `;
 
+const LoggedInUserBox = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 24px;
+  cursor: pointer;
+  svg {
+    width: 32px;
+    height: 32px;
+    color: ${(props) =>
+      props.changeColor ? props.theme.green : 'rgb(31,41,55)'};
+  }
+`;
+
+const ModalBox = styled.div`
+  position: absolute;
+  top: 70px;
+  right: 1px;
+  padding: 24px;
+  width: 220px;
+  height: 185px;
+  display: ${(props) => (props.activeModal ? 'flex' : 'none')};
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px;
+  z-index: 999;
+  span {
+    color: #1f2937;
+    margin-top: 24px;
+  }
+`;
+
 const ButtonsBox = styled.div``;
 
 const Button = styled.span`
@@ -68,10 +99,13 @@ const INFO_QUERY = gql`
 `;
 
 function HeaderBar() {
+  const navigate = useNavigate();
+  const [activeModal, setActiveModal] = useState(false);
   const [changeNewShoptoGreen, setChangeNewShoptoGreen] = useState('');
   const [changeLogintoGreen, setChangeLogintoGreen] = useState('');
-  const navigate = useNavigate();
+  const [changeEllipsistoGreen, setChangeEllipsistoGreen] = useState('');
   const isLogged = useReactiveVar(isLoggedInvar);
+  const userName = localStorage.getItem(NAME);
   const { data } = useQuery(INFO_QUERY, {
     context: {
       headers: {
@@ -90,8 +124,32 @@ function HeaderBar() {
       <ButtonsBox>
         {isLogged ? (
           <InfoBox>
-            <Avatar url={data?.seeProfile?.avatar} />
-            <Button onClick={() => logUserOut()}>로그아웃</Button>
+            <IconButton
+              onClick={() => navigate(routes.createShop)}
+              changeColor={changeNewShoptoGreen}
+              onMouseOver={() => setChangeNewShoptoGreen(true)}
+              onMouseLeave={() => setChangeNewShoptoGreen(false)}
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <Button>새 글 쓰기</Button>
+            </IconButton>
+            <LoggedInUserBox
+              changeColor={changeEllipsistoGreen}
+              onMouseOver={() => setChangeEllipsistoGreen(true)}
+              onMouseLeave={() => setChangeEllipsistoGreen(false)}
+              onClick={() => setActiveModal((current) => !current)}
+              onBlur={() => setActiveModal(false)}
+            >
+              <Avatar url={data?.seeProfile?.avatar} />
+              <FontAwesomeIcon icon={faEllipsisVertical} />
+              <ModalBox activeModal={activeModal}>
+                <Button onClick={() => navigate(routes.myLikeList)}>
+                  관심 목록
+                </Button>
+                <Button onClick={() => logUserOut()}>프로필</Button>
+                <Button onClick={() => logUserOut()}>로그아웃</Button>
+              </ModalBox>
+            </LoggedInUserBox>
           </InfoBox>
         ) : (
           <InfoBox>

@@ -10,17 +10,16 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   width: 100%;
-  max-width: 1100px;
+  max-width: 800px;
   margin-top: 150px;
 `;
 
-function InfoLayout({ children }) {
+function ProfileInfoLayout({ children }) {
   return (
     <Container>
       <Wrapper>{children}</Wrapper>
     </Container>
   );
 }
-export default InfoLayout;
+export default ProfileInfoLayout;
