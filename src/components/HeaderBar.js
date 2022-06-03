@@ -74,7 +74,7 @@ const ModalBox = styled.div`
   right: 1px;
   padding: 24px;
   width: 220px;
-  height: 185px;
+  height: 220px;
   display: ${(props) => (props.activeModal ? 'flex' : 'none')};
   flex-direction: column;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px;
@@ -157,7 +157,8 @@ function HeaderBar() {
             >
               <Avatar url={data?.seeProfile?.avatar} />
               <FontAwesomeIcon icon={faEllipsisVertical} />
-              <ModalBox activeModal={activeModal}>
+              <ModalBox activeModal={activeModal} ref={el}>
+                <Button onClick={() => navigate(routes.myList)}>내 목록</Button>
                 <Button onClick={() => navigate(routes.myLikeList)}>
                   관심 목록
                 </Button>

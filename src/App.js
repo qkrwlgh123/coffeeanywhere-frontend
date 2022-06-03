@@ -14,9 +14,9 @@ import ShopInfo from './screens/ShopInfo';
 import EditShop from './screens/EditShop';
 import PublicList from './screens/PublicList';
 import HeaderBar from './components/HeaderBar';
-
 import MyLikeList from './screens/MyLikeList';
 import Profile from './screens/Profile';
+import MyShops from './screens/MyShops';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInvar);
@@ -60,6 +60,7 @@ function App() {
                 }
               ></Route>
               <Route path={routes.publiclist} element={<PublicList />}></Route>
+              <Route path={routes.myList} element={<MyShops />}></Route>
               <Route path={routes.myLikeList} element={<MyLikeList />}></Route>
               <Route path={routes.profile} element={<Profile />}></Route>
               <Route path="*" element={<Navigate to={routes.home} replace />} />
