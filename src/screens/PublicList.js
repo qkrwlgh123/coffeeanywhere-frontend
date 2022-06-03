@@ -50,7 +50,7 @@ const SearchInputBox = styled.div`
   align-items: center;
 `;
 
-const SearchInput = styled.input`
+export const SearchInput = styled.input`
   width: 240px;
   font-size: 24px;
   font-weight: 400;

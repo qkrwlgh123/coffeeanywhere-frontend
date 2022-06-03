@@ -145,20 +145,20 @@ export const AddHashTag = styled.span`
 
 export const UploadBox = styled.div`
   display: flex;
-  width: 50%;
+  width: 19%;
   label {
     color: rgb(38, 38, 38);
     border: 0.5px solid rgba(219, 219, 219, 1);
     cursor: pointer;
     font-size: 15px;
     padding: 10px;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
     span {
       margin-left: 5px;
     }

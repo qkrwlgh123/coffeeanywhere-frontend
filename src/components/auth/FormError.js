@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
 const SFormError = styled.span`
-  color: tomato;
+  color: #ff8a3e;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
+  margin-top: 8px;
 `;
 
 function FormError({ message }) {

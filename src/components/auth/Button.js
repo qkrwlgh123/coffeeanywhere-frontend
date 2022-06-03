@@ -1,18 +1,21 @@
 import styled from 'styled-components';
 
 const Button = styled.input`
-  border: none;
-  margin-top: 25px;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.accent};
-  color: white;
-  text-align: center;
-  padding: 8px 0px;
-  font-size: 18px;
-  font-weight: 600;
-  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  opacity: ${(props) => (props.disabled ? '0.2' : 1)};
+  font-weight: 400;
+  width: 20%;
+  padding: 10px 8px;
+  margin: 30px 0px;
+  font-size: 18px;
+  border-radius: 8px;
+  color: ${(props) =>
+    props.disabled ? 'rgb(75, 85, 99)' : 'rgb(229, 231, 235)'};
+  background-color: ${(props) =>
+    props.disabled ? 'rgb(209, 213, 219)' : '#475569'};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 export default Button;

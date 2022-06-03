@@ -13,11 +13,27 @@ import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FileUpload, UploadBox } from './CreateShop';
+import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
+import { SearchInput } from './PublicList';
+
+const AuthInput = styled(SearchInput)`
+  width: 436px;
+  height: 50px;
+  font-size: 22px;
+  margin-top: 16px;
+`;
+
+const InputDescribeBox = styled.div`
+  margin-top: 8px;
+  padding: 4px;
+  color: rgb(156, 163, 175);
+  font-size: 16px;
+  font-weight: 400;
+`;
 
 const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const AvatarImg = styled.img`
@@ -28,8 +44,7 @@ const AvatarImg = styled.img`
 
 const Subtitle = styled(FatLink)`
   font-size: 16px;
-  text-align: center;
-  margin-top: 10px;
+  margin-top: 16px;
 `;
 
 const CREATE_ACCOUNT_MUTATION = gql`
@@ -38,7 +53,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
     $username: String!
     $password: String!
     $email: String!
-    $location: String
+    $description: String
     $avatar: Upload
   ) {
     createAccount(
@@ -46,7 +61,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
       username: $username
       password: $password
       email: $email
-      location: $location
+      description: $description
       avatar: $avatar
     ) {
       ok
@@ -93,11 +108,11 @@ function SignUp() {
       setError('result', {
         message: error,
       });
-      setErrorMessage(error);
+      setErrorMessage('해당 이메일 또는 사용자 이름은 이미 존재합니다.');
     } else {
       navigate(routes.login, {
         state: {
-          message: 'Account created. Please log in!',
+          message: '회원가입을 축하합니다! 로그인해주세요!',
           username: getValues().username,
         },
       });
@@ -120,17 +135,18 @@ function SignUp() {
 
   const clearError = () => {
     clearErrors('result');
+    setErrorMessage('');
   };
 
   return (
-    <AuthLayout>
-      <PageTitle title="SignUp" />
+    <ProfileInfoLayout>
+      <PageTitle title="회원가입" />
       <FormBox>
         <HeaderContainer>
-          <Title>Nomad Coffee</Title>
-          <Subtitle>가입하고 전국 카페 정보를 얻어보세요.</Subtitle>
+          <Title>회원가입</Title>
+          <Subtitle>가입하시고 전국 카페 정보를 손쉽게 얻어보세요!</Subtitle>
         </HeaderContainer>
-        <ErrorBox>{errorMessage !== '' ? errorMessage : null}</ErrorBox>
+
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <UploadBox>
             {prevAvatar && uploadAvatar ? (
@@ -147,10 +163,9 @@ function SignUp() {
               </div>
             )}
           </UploadBox>
-          <FormError message={errors?.name?.message} />
-          <Input
+          <AuthInput
             ref={register({
-              required: 'Name is required.',
+              required: '이름을 입력해주세요.',
               minLength: {
                 value: 2,
                 message: '이름은 두 글자 이상 입력이 필요합니다.',
@@ -161,10 +176,10 @@ function SignUp() {
             type="text"
             placeholder="이름"
           />
-          <FormError message={errors?.username?.message} />
-          <Input
+          <FormError message={errors?.name?.message} />
+          <AuthInput
             ref={register({
-              required: 'Username is required.',
+              required: '사용자명을 입력해주세요.',
               minLength: {
                 value: 2,
                 message: '사용자명은 두 글자 이상 입력이 필요합니다.',
@@ -173,12 +188,15 @@ function SignUp() {
             onChange={clearError}
             name="username"
             type="text"
-            placeholder="사용자명(해당 정보로 소통하게 됩니다.)"
+            placeholder="사용자명"
           />
-          <FormError message={errors?.password?.message} />
-          <Input
+          <FormError message={errors?.username?.message} />
+          <InputDescribeBox>
+            Cafe anywhere에서 사용할 이름입니다.
+          </InputDescribeBox>
+          <AuthInput
             ref={register({
-              required: 'Password is required.',
+              required: '비밀번호를 입력해주세요.',
               minLength: {
                 value: 5,
                 message: '비밀번호는 다섯 글자 이상 입력이 필요합니다.',
@@ -189,8 +207,9 @@ function SignUp() {
             type="password"
             placeholder="비밀번호"
           />
-          <FormError message={errors?.email?.message} />
-          <Input
+          <FormError message={errors?.password?.message} />
+
+          <AuthInput
             ref={register({
               required: '이메일을 입력해주세요.',
             })}
@@ -199,17 +218,20 @@ function SignUp() {
             type="text"
             placeholder="이메일"
           />
-          <FormError message={errors?.location?.message} />
-          <Input
-            ref={register({
-              required: '현재 거주 중인 지역을 간략하게 입력해주세요.',
-            })}
+          <FormError message={errors?.email?.message} />
+          <AuthInput
+            ref={register}
             onChange={clearError}
-            name="location"
+            name="description"
             type="text"
-            placeholder="지역"
+            placeholder="소개글"
           />
-
+          <InputDescribeBox>
+            프로필에 표시될 간단한 소개글입니다.
+          </InputDescribeBox>
+          <ErrorBox active={errorMessage !== ''}>
+            {errorMessage !== '' ? errorMessage : null}
+          </ErrorBox>
           <Button
             type="submit"
             value={loading ? 'Loading...' : '회원가입'}
@@ -217,12 +239,7 @@ function SignUp() {
           />
         </form>
       </FormBox>
-      <BottomBox
-        cta="이미 계정이 있으신가요?"
-        linkText="로그인하러 가기"
-        link={routes.login}
-      />
-    </AuthLayout>
+    </ProfileInfoLayout>
   );
 }
 export default SignUp;

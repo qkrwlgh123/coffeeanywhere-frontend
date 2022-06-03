@@ -141,6 +141,7 @@ const PROFILE_QUERY = gql`
       user {
         username
         avatar
+        description
         likes {
           id
         }
@@ -189,7 +190,11 @@ function Profile() {
             <span>게시물 {data?.seeUser.shop.length}개</span>
             <span>좋아요 {data?.seeUser.user.likes?.length}개</span>
           </UserInfos>
-          <UserDescribe>소개글</UserDescribe>
+          <UserDescribe>
+            {data?.seeUser.user.description
+              ? data?.seeUser.user.description
+              : '간단하게 자신을 소개해주세요!'}
+          </UserDescribe>
         </UserTextsBox>
       </UserInfoBox>
       <ListBox>

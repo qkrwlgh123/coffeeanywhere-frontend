@@ -12,14 +12,15 @@ export const FatLink = styled.span`
 `;
 
 export const Title = styled.span`
-  font-weight: 800;
-  font-size: 20px;
-  margin: 10px 0;
+  font-weight: 400;
+  font-size: 36px;
+  color: #1f2937;
 `;
 
 export const ErrorBox = styled.span`
   margin-top: 20px;
   font-weight: 600;
   font-size: 15px;
-  color: tomato;
+  color: #ff8a3e;
+  display: ${(props) => (props.active ? 'flex' : 'none')};
 `;

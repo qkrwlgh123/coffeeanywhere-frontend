@@ -2,6 +2,7 @@ const routes = {
   home: '/',
   login: '/login',
   signUp: '/sign-up',
+  editProfile: '/editProfile',
   createShop: '/add',
   shopInfo: '/:id',
   editShop: '/edit/:id',
