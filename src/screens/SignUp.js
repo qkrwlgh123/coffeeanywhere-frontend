@@ -15,12 +15,47 @@ import { useState } from 'react';
 import { FileUpload, UploadBox } from './CreateShop';
 import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
 import { SearchInput } from './PublicList';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
 
 const AuthInput = styled(SearchInput)`
   width: 436px;
   height: 50px;
   font-size: 22px;
   margin-top: 16px;
+`;
+
+const UploadedBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  label {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    background-color: #1f2937;
+    margin-bottom: -40px;
+    margin-right: -10px;
+    z-index: 100;
+  }
+  svg {
+    color: white;
+  }
+`;
+
+const UnUploadedBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border-radius: 75px;
+  border: 1px solid #9ca3af;
 `;
 
 const InputDescribeBox = styled.div`
@@ -150,17 +185,33 @@ function SignUp() {
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <UploadBox>
             {prevAvatar && uploadAvatar ? (
-              <AvatarImg src={prevAvatar} />
-            ) : (
-              <div>
-                <label htmlFor="file">프로필 사진 등록</label>
+              <UploadedBox>
+                <label htmlFor="file">
+                  <FontAwesomeIcon icon={faImage} size="2x" />
+                </label>
                 <FileUpload
                   id="file"
                   onChange={handleAddFile}
                   type="file"
                   accept="image/*"
                 />
-              </div>
+                <div>
+                  <AvatarImg src={prevAvatar} />
+                </div>
+              </UploadedBox>
+            ) : (
+              <UnUploadedBox>
+                <label htmlFor="file">
+                  <FontAwesomeIcon icon={faImage} size="2x" />
+                </label>
+                <FileUpload
+                  id="file"
+                  onChange={handleAddFile}
+                  type="file"
+                  accept="image/*"
+                />
+                <span>프로필 사진</span>
+              </UnUploadedBox>
             )}
           </UploadBox>
           <AuthInput
