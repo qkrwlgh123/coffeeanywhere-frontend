@@ -16,6 +16,7 @@ import {
   PrevPhotoLength,
   RepresentPhoto,
   UploadBox,
+  UploadPhotoBox,
 } from './CreateShop';
 import radioImg from '../radioImg.png';
 import { Open, OpenBox } from './CreateShop';
@@ -262,7 +263,7 @@ function EditShop() {
                 : null}
             </HashtagBox>
             <Title>사진 등록</Title>
-            <UploadBox>
+            <UploadPhotoBox>
               <label htmlFor="file">
                 <FontAwesomeIcon icon={faCamera} color="black" size="1x" />
                 <span>
@@ -281,7 +282,7 @@ function EditShop() {
                 accept="image/*"
                 disabled={photoPrevArr.length >= 4}
               />
-            </UploadBox>
+            </UploadPhotoBox>
             <PhotoPrevBox>
               {photoPrevArr.map((item, index) =>
                 index === 0 ? (

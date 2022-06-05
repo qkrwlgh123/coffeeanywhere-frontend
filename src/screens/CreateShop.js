@@ -154,11 +154,30 @@ export const UploadBox = styled.div`
   }
 `;
 
+export const UploadPhotoBox = styled.div`
+  display: flex;
+
+  label {
+    color: rgb(38, 38, 38);
+    border: 0.5px solid rgba(219, 219, 219, 1);
+    cursor: pointer;
+    font-size: 15px;
+    padding: 10px;
+    width: 100px;
+    height: 50px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    span {
+      margin-left: 5px;
+    }
+  }
+`;
+
 export const PhotoPrevBox = styled.div`
   display: flex;
-  img {
-    margin: 0px 5px;
-  }
 `;
 
 export const PrevPhoto = styled.div`
@@ -183,9 +202,8 @@ export const PrevPhoto = styled.div`
       pointer-events: none;
     }
   }
-  margin: 0px 15px;
+  margin-right: 15px;
   img {
-    margin: 0px;
     border-radius: 5px;
   }
 `;
@@ -532,7 +550,7 @@ function CreateShop() {
                 : null}
             </HashtagBox>
             <Title>사진 등록</Title>
-            <UploadBox>
+            <UploadPhotoBox>
               <label htmlFor="file">
                 <FontAwesomeIcon icon={faCamera} color="black" size="1x" />
                 <span>
@@ -551,7 +569,7 @@ function CreateShop() {
                 accept="image/*"
                 disabled={photoPrevArr.length >= 4}
               />
-            </UploadBox>
+            </UploadPhotoBox>
             <PhotoPrevBox>
               {photoPrevArr.map((item, index) =>
                 index === 0 ? (
