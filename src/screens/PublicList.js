@@ -94,7 +94,6 @@ const TextsBox = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 120px;
-
   margin-top: 65px;
   margin-left: 20px;
 `;
@@ -246,10 +245,10 @@ function PublicList() {
 
   return (
     <PublicListLayout>
-      <PageTitle title="EveryOne's Coffee" />
+      <PageTitle title="Home" />
       <MainImgBox>
         <TextsBox>
-          <Title>모두의 Coffee</Title>
+          <Title>커피 Anywhere</Title>
           <Subtitle>전국에 있는 사용자들과 카페 정보를 공유해보세요.</Subtitle>
         </TextsBox>
         <AnimationImgBox>둥둥 그림</AnimationImgBox>

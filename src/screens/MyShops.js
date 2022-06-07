@@ -148,7 +148,7 @@ function MyShops() {
   console.log(data);
   return (
     <ProfileInfoLayout>
-      <PageTitle title={`${name}님의 관심 목록`} />
+      <PageTitle title={`내 목록`} />
       <ListBox>
         {data?.seeMyShopList?.length > 0 ? (
           <Shops>

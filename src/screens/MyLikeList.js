@@ -159,7 +159,7 @@ function LikeList() {
   console.log(data);
   return (
     <ProfileInfoLayout>
-      <PageTitle title={`${name}님의 관심 목록`} />
+      <PageTitle title={`관심 목록`} />
       <ListBox>
         {data?.seeMyProfile.likes?.length > 0 ? (
           <Shops>

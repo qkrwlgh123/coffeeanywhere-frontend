@@ -4,7 +4,7 @@ import { PropTypes } from 'prop-types';
 function PageTitle({ title }) {
   return (
     <Helmet>
-      <title>모두의 커피 | {title}</title>
+      <title>커피 애니웨어 | {title}</title>
     </Helmet>
   );
 }

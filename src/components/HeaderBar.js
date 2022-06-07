@@ -78,7 +78,7 @@ const ModalBox = styled.div`
   display: ${(props) => (props.activeModal ? 'flex' : 'none')};
   flex-direction: column;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px;
-  z-index: 100;
+  background-color: #ffffff;
   span {
     color: #1f2937;
     margin-top: 24px;
@@ -134,7 +134,7 @@ function HeaderBar() {
     <HeaderBox>
       <Link to={routes.home}>
         <Logo>
-          <span>modu</span>
+          <span>coffee</span>
         </Logo>
       </Link>
       <ButtonsBox>

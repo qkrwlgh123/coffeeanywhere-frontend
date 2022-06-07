@@ -18,7 +18,7 @@ import {
   faLocationDot,
   faX,
 } from '@fortawesome/free-solid-svg-icons';
-import { HashtagBox, Message } from './ShopInfo';
+import { DeleteHashtagBox, HashtagBox, Message } from './ShopInfo';
 
 import radioImg from '../radioImg.png';
 
@@ -395,8 +395,8 @@ function CreateShop() {
   };
 
   const handleDeleteHashTag = (event) => {
-    const deleteObj = Number(event.target.getAttribute('index'));
-    setHashTagArr(hashTagArr.filter((_, index) => index !== deleteObj));
+    const deleteObj = event.target.getAttribute('a');
+    setHashTagArr(hashTagArr.filter((item) => item !== deleteObj));
   };
 
   const handleAddFile = (event) => {
@@ -540,12 +540,12 @@ function CreateShop() {
             <HashtagBox>
               {hashTagArr.length !== 0
                 ? hashTagArr.map((item, index) => (
-                    <Hashtag key={item}>
-                      <span>#{item}</span>
-                      <div index={index} onClick={handleDeleteHashTag}>
-                        <FontAwesomeIcon icon={faX} color="gray" size="xs" />
+                    <div key={item}>
+                      <div>#{item}</div>
+                      <div a={item} onClick={handleDeleteHashTag}>
+                        <FontAwesomeIcon icon={faX} size="xs" />
                       </div>
-                    </Hashtag>
+                    </div>
                   ))
                 : null}
             </HashtagBox>
@@ -596,7 +596,7 @@ function CreateShop() {
                 )
               )}
             </PhotoPrevBox>
-            <Title>커피숍 설명 작성</Title>
+            <Title>카페 설명 작성</Title>
             <DescribeInput
               ref={register}
               name="description"

@@ -18,7 +18,7 @@ import { SearchInput } from './PublicList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 
-const AuthInput = styled(SearchInput)`
+export const AuthInput = styled(SearchInput)`
   width: 436px;
   height: 50px;
   font-size: 22px;
@@ -239,7 +239,7 @@ function SignUp() {
             onChange={clearError}
             name="username"
             type="text"
-            placeholder="사용자명"
+            placeholder="사용자 이름"
           />
           <FormError message={errors?.username?.message} />
           <InputDescribeBox>

@@ -114,9 +114,7 @@ function EditShop() {
       }
     },
   });
-  console.log('미리보기 사진들', photoPrevArr);
-  console.log('업로드 사진들', photoUploadArr);
-  console.log('삭제할 사진들', photoDeleteArr);
+
   const onCompleted = (data) => {
     const {
       editCoffeeShop: { ok },
@@ -154,8 +152,8 @@ function EditShop() {
   };
 
   const handleDeleteHashTag = (event) => {
-    const deleteObj = Number(event.target.getAttribute('index'));
-    setHashTagArr(hashTagArr.filter((_, index) => index !== deleteObj));
+    const deleteObj = event.target.getAttribute('a');
+    setHashTagArr(hashTagArr.filter((item) => item !== deleteObj));
   };
 
   const handleAddFile = (event) => {
@@ -253,12 +251,12 @@ function EditShop() {
             <HashtagBox>
               {hashTagArr.length !== 0
                 ? hashTagArr.map((item, index) => (
-                    <Hashtag key={item}>
-                      <span>#{item}</span>
-                      <div index={index} onClick={handleDeleteHashTag}>
-                        <FontAwesomeIcon icon={faX} color="gray" size="xs" />
+                    <div key={item}>
+                      <div>#{item}</div>
+                      <div a={item} onClick={handleDeleteHashTag}>
+                        <FontAwesomeIcon icon={faX} size="xs" />
                       </div>
-                    </Hashtag>
+                    </div>
                   ))
                 : null}
             </HashtagBox>

@@ -17,13 +17,11 @@ import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
 import { loggedId, logUserIn } from '../apollo';
 import { useState } from 'react';
+import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
+import { AuthInput } from './SignUp';
 
-const FacebookLogin = styled.div`
-  color: #385285;
-  span {
-    margin-left: 10px;
-    font-weight: 600;
-  }
+const TitleBox = styled.div`
+  margin-bottom: 50px;
 `;
 
 const LOGIN_MUTATION = gql`
@@ -56,6 +54,7 @@ function Login() {
       username: location?.state?.username || '',
     },
   });
+
   const onCompleted = (data) => {
     const {
       login: { ok, name, token, error },
@@ -88,61 +87,52 @@ function Login() {
   };
 
   return (
-    <AuthLayout>
-      <PageTitle title="Login" />
+    <ProfileInfoLayout>
+      <PageTitle title="로그인" />
       <FormBox>
-        <div>
-          <Title>Nomad Coffee</Title>
-        </div>
+        <TitleBox>
+          <Title>로그인</Title>
+        </TitleBox>
         <Notification message={location?.state?.message} />
         <ErrorBox>{errorMessage !== '' ? errorMessage : null}</ErrorBox>
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <FormError message={errors?.username?.message} />
-          <Input
+          <AuthInput
             ref={register({
-              required: 'Username is required.',
-              minLength: {
-                value: 3,
-                message: 'Username sholud be longer than 3 chars.',
-              },
+              required: '사용자 이름을 입력해주세요.',
             })}
             onChange={onClearErrors}
             name="username"
             type="text"
-            placeholder="Username"
+            placeholder="사용자 이름"
           />
           <FormError message={errors?.password?.message} />
-          <Input
+          <AuthInput
             ref={register({
-              required: 'Password is required.',
-              minLength: {
-                value: 5,
-                message: 'Password should be longer than 5 chars.',
-              },
+              required: '비밀번호를 입력해주세요.',
             })}
             onChange={onClearErrors}
             name="password"
             type="password"
-            placeholder="Password"
+            placeholder="비밀번호"
           />
+          <ErrorBox active={errorMessage !== ''}>
+            {errorMessage !== '' ? errorMessage : null}
+          </ErrorBox>
           <Button
             type="submit"
-            value={loading ? 'Loading..' : 'Log in'}
+            value={loading ? 'Loading..' : '로그인'}
             disabled={!formState.isValid || loading}
           />
         </form>
         <Separator />
-        <FacebookLogin>
-          <FontAwesomeIcon icon={faFacebookSquare} />
-          <span>Log in with Facebook</span>
-        </FacebookLogin>
       </FormBox>
       <BottomBox
-        cta="Don't have an account?"
-        linkText="Sign up"
+        cta="계정이 없으신가요?"
+        linkText="회원가입"
         link={routes.signUp}
       />
-    </AuthLayout>
+    </ProfileInfoLayout>
   );
 }
 export default Login;

@@ -121,6 +121,7 @@ const Ownerbox = styled.div`
 const Owner = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 
 const OwnerName = styled.span`
@@ -151,18 +152,32 @@ export const HashtagBox = styled.div`
   padding-bottom: 32px;
   border-bottom: 2px solid rgb(229, 231, 235);
   div {
+    display: flex;
+    align-items: center;
     background-color: #64748b;
-    padding: 8px 12px;
-    margin: 4px 0px 4px 8px;
+    width: fit-content;
+    padding: 2px 4px;
+    margin: 4px 0px 4px 12px;
     border-radius: 12px;
     font-size: 16px;
     color: #ffffff;
+    div {
+      cursor: pointer;
+    }
   }
   span {
     width: 100%;
     text-align: center;
+    padding: 5px;
     font-size: 17px;
     background-color: #64748b;
+  }
+  svg {
+    cursor: pointer;
+    margin-left: 8px;
+    padding-right: 8px;
+    color: white;
+    pointer-events: none;
   }
 `;
 
@@ -519,8 +534,6 @@ function ShopInfo() {
     });
   };
 
-  useEffect(() => {}, [photoIndex]);
-
   return (
     <ShopInfoLayout>
       <PageTitle title={`${data?.seeCoffeeShop?.shop?.name}`} />
@@ -570,7 +583,11 @@ function ShopInfo() {
           <InfoContainer>
             <NameBox>{data?.seeCoffeeShop?.shop.name}</NameBox>
             <Ownerbox>
-              <Owner>
+              <Owner
+                onClick={() =>
+                  navigate(`/profile/${data?.seeCoffeeShop.shop.user.username}`)
+                }
+              >
                 <Avatar url={data?.seeCoffeeShop.shop.user.avatar} />
                 <OwnerName>{data?.seeCoffeeShop.shop.user.username}</OwnerName>
               </Owner>
@@ -595,13 +612,13 @@ function ShopInfo() {
             <Addr>{data?.seeCoffeeShop.shop.address}</Addr>
             <MapContainer id="myMap"></MapContainer>
             <HashtagBox>
-              {data?.seeCoffeeShop.shop.categories.length !== 0 ? (
-                data?.seeCoffeeShop.shop.categories.map((item) => (
-                  <div key={item.name}>{item.name}</div>
-                ))
-              ) : (
-                <span>작성된 해쉬태그가 없습니다</span>
-              )}
+              {data?.seeCoffeeShop.shop.categories.length !== 0
+                ? data?.seeCoffeeShop.shop.categories.map((item) => (
+                    <div key={item.name}>
+                      <span>{item.name}</span>
+                    </div>
+                  ))
+                : null}
             </HashtagBox>
           </InfoContainer>
           <DescriptionBox>
@@ -654,7 +671,7 @@ function ShopInfo() {
                 </Reply>
               ))
             ) : (
-              <span>댓글이 없습니다</span>
+              <ReplyContent>댓글이 없습니다</ReplyContent>
             )}
           </ReplyBox>
         </InfoBox>
