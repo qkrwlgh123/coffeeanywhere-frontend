@@ -36,7 +36,13 @@ function App() {
               ></Route>
               <Route
                 path={routes.signUp}
-                element={!isLoggedIn ? <SignUp /> : null}
+                element={
+                  !isLoggedIn ? (
+                    <SignUp />
+                  ) : (
+                    <Navigate to={routes.home} replace />
+                  )
+                }
               ></Route>
               <Route
                 path={routes.createShop}
@@ -44,7 +50,7 @@ function App() {
                   isLoggedIn ? (
                     <CreateShop />
                   ) : (
-                    <Navigate to={routes.home} replace />
+                    <Navigate to={routes.login} replace />
                   )
                 }
               ></Route>
@@ -55,7 +61,7 @@ function App() {
                   isLoggedIn ? (
                     <EditShop />
                   ) : (
-                    <Navigate to={routes.home} replace />
+                    <Navigate to={routes.login} replace />
                   )
                 }
               ></Route>

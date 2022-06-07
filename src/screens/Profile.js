@@ -180,7 +180,7 @@ function Profile() {
 
   return (
     <ProfileInfoLayout>
-      <PageTitle title={`${name}님의 관심 목록`} />
+      <PageTitle title={`${name}님의 프로필`} />
       <Title>프로필</Title>
       <UserInfoBox>
         <Avatar url={data?.seeUser.user.avatar} />
