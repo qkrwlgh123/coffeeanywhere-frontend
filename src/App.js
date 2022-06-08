@@ -17,6 +17,7 @@ import HeaderBar from './components/HeaderBar';
 import MyLikeList from './screens/MyLikeList';
 import Profile from './screens/Profile';
 import MyShops from './screens/MyShops';
+import EditProfile from './screens/EditProfile';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInvar);
@@ -63,6 +64,12 @@ function App() {
                   ) : (
                     <Navigate to={routes.login} replace />
                   )
+                }
+              ></Route>
+              <Route
+                path={routes.editProfile}
+                element={
+                  isLoggedIn ? <EditProfile /> : <Navigate to={routes.login} />
                 }
               ></Route>
               <Route path={routes.publiclist} element={<PublicList />}></Route>

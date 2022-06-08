@@ -162,7 +162,9 @@ function HeaderBar() {
                 <Button onClick={() => navigate(routes.myLikeList)}>
                   관심 목록
                 </Button>
-                <Button onClick={() => navigate()}>프로필 수정</Button>
+                <Button onClick={() => navigate(routes.editProfile)}>
+                  프로필 수정
+                </Button>
                 <Button onClick={() => logUserOut()}>로그아웃</Button>
               </ModalBox>
             </LoggedInUserBox>
