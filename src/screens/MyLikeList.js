@@ -8,13 +8,15 @@ import { faUser } from '@fortawesome/free-regular-svg-icons'; // ♡
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TOKEN } from '../apollo';
 import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
+import ShopForPublic from '../components/shop/ShopForPublic';
+import { Layout } from './PublicList';
+import PublicListLayout from '../components/shop/PublicListLayout';
 
 const ListBox = styled.div`
   display: flex;
-  flex-direction: column;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  width: 100%;
 `;
 
 const Shops = styled.div`
@@ -37,89 +39,6 @@ const Shops = styled.div`
   }
 `;
 
-const UserInfoBox = styled.div`
-  margin-top: 150px;
-  width: 35%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const UserImg = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 70px;
-`;
-
-const UserNoneImg = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
-  height: 150px;
-`;
-
-const UserName = styled.div`
-  display: flex;
-  margin-top: 10px;
-  justify-content: center;
-  align-items: center;
-  background-color: rgb(255, 255, 255);
-  border: 0px solid rgb(229, 231, 235);
-  border-radius: 9999px;
-  width: 80%;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px;
-  padding: 30px 40px;
-  font-size: 30px;
-  font-weight: 500;
-`;
-
-const Shop = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 378px;
-  height: 213px;
-  cursor: pointer;
-`;
-
-const Img = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-`;
-
-const EmptyPhoto = styled.div`
-  width: 100%;
-  height: 100%;
-  border: 0.5px dotted black;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const NameBox = styled.div`
-  display: flex;
-
-  justify-content: center;
-  align-items: center;
-  background-color: #ffffff;
-  width: 90%;
-  padding: 20px 8px;
-  position: relative;
-  border-radius: 8px;
-  border-color: rgb(229, 231, 235);
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px;
-  transition: all 0.2s ease-in-out;
-  top: ${(props) => (props.active ? '-45px' : '-30px')};
-  span {
-    font-size: 20px;
-    font-weight: 400;
-    color: inherit;
-  }
-`;
-
 const PROFILE_QUERY = gql`
   query seeMyProfile($username: String) {
     seeMyProfile(username: $username) {
@@ -133,9 +52,20 @@ const PROFILE_QUERY = gql`
         coffeeShop {
           id
           name
+          address
+          user {
+            username
+            avatar
+          }
           photos {
             id
             url
+          }
+          likes {
+            like
+          }
+          replys {
+            content
           }
         }
       }
@@ -156,38 +86,22 @@ function LikeList() {
     },
     fetchPolicy: 'no-cache',
   });
-  console.log(data);
+
   return (
-    <ProfileInfoLayout>
+    <PublicListLayout>
       <PageTitle title={`관심 목록`} />
-      <ListBox>
-        {data?.seeMyProfile.likes?.length > 0 ? (
-          <Shops>
-            {data?.seeMyProfile.likes?.map((item) => (
-              <Shop
-                onMouseOver={() => setActive(item?.coffeeShop.id)}
-                onMouseOut={() => setActive(0)}
-                key={item?.coffeeShop.id}
-                onClick={() => navigate(`/${item?.coffeeShop.id}`)}
-              >
-                {item?.coffeeShop.photos?.length > 0 ? (
-                  <Img src={item?.coffeeShop?.photos[0].url} />
-                ) : (
-                  <EmptyPhoto>
-                    <span key={item?.coffeeShop.id}>사진을 추가해주세요</span>
-                  </EmptyPhoto>
-                )}
-                <NameBox active={active === item?.coffeeShop.id}>
-                  <span>{item?.coffeeShop.name}</span>
-                </NameBox>
-              </Shop>
-            ))}
-          </Shops>
-        ) : (
-          <span>Add a Shop!</span>
-        )}
-      </ListBox>
-    </ProfileInfoLayout>
+      {data?.seeMyProfile.likes?.length > 0 ? (
+        <Layout>
+          {data?.seeMyProfile.likes?.map((item) => (
+            <ShopForPublic key={item.coffeeShop.id} {...item.coffeeShop} />
+          ))}
+        </Layout>
+      ) : (
+        <ListBox>
+          <span>관심 목록에 게시물을 추가해보세요!</span>
+        </ListBox>
+      )}
+    </PublicListLayout>
   );
 }
 export default LikeList;

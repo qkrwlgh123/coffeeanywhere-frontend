@@ -8,85 +8,32 @@ import { faUser } from '@fortawesome/free-regular-svg-icons'; // ♡
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TOKEN } from '../apollo';
 import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
-
-const ListBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-`;
-
-const Shops = styled.div`
-  display: grid;
-  /* Media Query for Laptops and Desktops */
-  @media (min-width: 1280px) {
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 2.5rem;
-    row-gap: 4.5rem;
-  }
-  /* Media Query for Tablet */
-  @media (min-width: 768px) and (max-width: 1279px) {
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 30px;
-  }
-  /* Media Query for Mobile */
-  @media (max-width: 650px) {
-    grid-template-columns: repeat(1, 1fr);
-    grid-gap: 30px;
-  }
-`;
-
-const UserInfoBox = styled.div`
-  margin-top: 150px;
-  width: 35%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const UserImg = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 70px;
-`;
-
-const UserNoneImg = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
-  height: 150px;
-`;
-
-const UserName = styled.div`
-  display: flex;
-  margin-top: 10px;
-  justify-content: center;
-  align-items: center;
-  background-color: rgb(255, 255, 255);
-  border: 0px solid rgb(229, 231, 235);
-  border-radius: 9999px;
-  width: 80%;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px;
-  padding: 30px 40px;
-  font-size: 30px;
-  font-weight: 500;
-`;
+import ShopForPublic from '../components/shop/ShopForPublic';
+import { Layout } from './PublicList';
+import PublicListLayout from '../components/shop/PublicListLayout';
 
 const Shop = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 378px;
-  height: 213px;
+  width: 100%;
   cursor: pointer;
+`;
+
+const ImgBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 210px;
+  margin-bottom: 15px;
 `;
 
 const Img = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  object-fit: fill;
+  border-radius: 5%;
 `;
 
 const EmptyPhoto = styled.div`
@@ -133,7 +80,6 @@ const PROFILE_QUERY = gql`
 `;
 
 function MyShops() {
-  const { name } = useParams();
   const navigate = useNavigate();
   const [active, setActive] = useState(false);
 
@@ -145,38 +91,38 @@ function MyShops() {
     },
     fetchPolicy: 'no-cache',
   });
-  console.log(data);
+
   return (
-    <ProfileInfoLayout>
+    <PublicListLayout>
       <PageTitle title={`내 목록`} />
-      <ListBox>
-        {data?.seeMyShopList?.length > 0 ? (
-          <Shops>
-            {data?.seeMyShopList?.map((item) => (
-              <Shop
-                onMouseOver={() => setActive(item?.id)}
-                onMouseOut={() => setActive(0)}
-                key={item?.id}
-                onClick={() => navigate(`/${item?.id}`)}
-              >
-                {item?.photos?.length > 0 ? (
+      {data?.seeMyShopList?.length > 0 ? (
+        <Layout>
+          {data?.seeMyShopList?.map((item) => (
+            <Shop
+              onMouseOver={() => setActive(item?.id)}
+              onMouseOut={() => setActive(0)}
+              key={item?.id}
+              onClick={() => navigate(`/${item?.id}`)}
+            >
+              {item?.photos?.length > 0 ? (
+                <ImgBox>
                   <Img src={item?.photos[0].url} />
-                ) : (
-                  <EmptyPhoto>
-                    <span key={item?.id}>사진을 추가해주세요</span>
-                  </EmptyPhoto>
-                )}
-                <NameBox active={active === item?.id}>
-                  <span>{item?.name}</span>
-                </NameBox>
-              </Shop>
-            ))}
-          </Shops>
-        ) : (
-          <span>Add a Shop!</span>
-        )}
-      </ListBox>
-    </ProfileInfoLayout>
+                </ImgBox>
+              ) : (
+                <EmptyPhoto>
+                  <span key={item?.id}>사진을 추가해주세요</span>
+                </EmptyPhoto>
+              )}
+              <NameBox active={active === item?.id}>
+                <span>{item?.name}</span>
+              </NameBox>
+            </Shop>
+          ))}
+        </Layout>
+      ) : (
+        <span>새 게시물을 작성해보세요!</span>
+      )}
+    </PublicListLayout>
   );
 }
 export default MyShops;

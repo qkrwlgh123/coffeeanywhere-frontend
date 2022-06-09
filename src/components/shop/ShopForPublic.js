@@ -93,6 +93,7 @@ const OwnerInfo = styled.div`
 
 function ShopForPublic(item) {
   const [active, setActive] = useState('');
+
   return (
     <ShopBox active={active === item.id}>
       {item?.photos?.length > 0 ? (

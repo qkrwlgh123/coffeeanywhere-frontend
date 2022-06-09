@@ -165,7 +165,14 @@ function HeaderBar() {
                 <Button onClick={() => navigate(routes.editProfile)}>
                   프로필 수정
                 </Button>
-                <Button onClick={() => logUserOut()}>로그아웃</Button>
+                <Button
+                  onClick={() => {
+                    logUserOut();
+                    navigate(routes.home);
+                  }}
+                >
+                  로그아웃
+                </Button>
               </ModalBox>
             </LoggedInUserBox>
           </InfoBox>

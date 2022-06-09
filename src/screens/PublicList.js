@@ -120,7 +120,7 @@ const AnimationImgBox = styled.div`
   height: 520px;
 `;
 
-const Layout = styled.div`
+export const Layout = styled.div`
   display: grid;
   margin: 48px;
 
