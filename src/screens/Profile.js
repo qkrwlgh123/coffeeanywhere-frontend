@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TOKEN } from '../apollo';
 import Avatar from '../components/auth/Avatar';
 import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
+import { faComments, faHeart } from '@fortawesome/free-solid-svg-icons';
 
 const Title = styled.span`
   font-size: 36px;
@@ -92,15 +93,21 @@ const Shop = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 378px;
-  height: 213px;
+  width: 278px;
+  height: 272px;
   cursor: pointer;
+  background-color: ${(props) => (props.active ? 'black' : 'inherit')};
+  position: relative;
+  transition: background-color 0.1s ease;
+  border-radius: 8px;
 `;
 
 const Img = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 8px;
+  opacity: ${(props) => (props.active ? '0.3' : '1')};
+  transition: opacity 0.1s ease;
 `;
 
 const EmptyPhoto = styled.div`
@@ -113,23 +120,26 @@ const EmptyPhoto = styled.div`
   justify-content: center;
 `;
 
-const NameBox = styled.div`
-  display: flex;
+const InfoBox = styled.div`
+  display: ${(props) => (props.active ? 'flex' : 'none')};
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
-  width: 90%;
-  padding: 20px 8px;
-  position: relative;
-  border-radius: 8px;
-  border-color: rgb(229, 231, 235);
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px;
-  transition: all 0.2s ease-in-out;
-  top: ${(props) => (props.active ? '-45px' : '-30px')};
-  span {
-    font-size: 20px;
-    font-weight: 400;
-    color: inherit;
+  position: absolute;
+  width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: display 0.1s ease;
+`;
+
+const InfoText = styled.span`
+  font-size: 20px;
+  font-weight: 400;
+  color: white;
+  margin-bottom: 8px;
+  svg {
+    margin: 0px 5px;
   }
 `;
 
@@ -152,6 +162,12 @@ const PROFILE_QUERY = gql`
         photos {
           id
           url
+        }
+        likes {
+          like
+        }
+        replys {
+          content
         }
       }
       followers {
@@ -206,17 +222,33 @@ function Profile() {
                 onMouseOut={() => setActive(0)}
                 key={item?.id}
                 onClick={() => navigate(`/${item?.id}`)}
+                active={active === item.id}
               >
                 {item.photos.length > 0 ? (
-                  <Img src={item.photos[0].url} />
+                  <Img src={item.photos[0].url} active={active === item.id} />
                 ) : (
                   <EmptyPhoto>
                     <span key={item.id}>사진을 추가해주세요</span>
                   </EmptyPhoto>
                 )}
-                <NameBox active={active === item.id}>
-                  <span>{item.name}</span>
-                </NameBox>
+                <InfoBox active={active === item.id}>
+                  <InfoText>{item.name}</InfoText>
+                  <div>
+                    <InfoText>
+                      <FontAwesomeIcon icon={faHeart} size="1x" color="white" />
+
+                      {item.likes.length}
+                    </InfoText>
+                    <InfoText>
+                      <FontAwesomeIcon
+                        icon={faComments}
+                        size="1x"
+                        color="white"
+                      />
+                      {item.replys.length}
+                    </InfoText>
+                  </div>
+                </InfoBox>
               </Shop>
             ))}
           </Shops>
