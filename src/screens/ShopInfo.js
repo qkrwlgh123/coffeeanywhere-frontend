@@ -7,7 +7,6 @@ import {
   faAngleRight,
 } from '@fortawesome/free-solid-svg-icons'; // ♥︎
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -410,25 +409,20 @@ function ShopInfo() {
   const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [photoStage, setPhotoStage] = useState('');
 
   const handlePhotoLeft = () => {
     if (photoIndex !== 0) {
       setPhotoIndex((current) => current - 1);
-      setPhotoStage('left');
     } else {
       setPhotoIndex(data?.seeCoffeeShop.shop.photos.length - 1);
-      setPhotoStage('left');
     }
   };
 
   const handlePhotoRight = () => {
     if (photoIndex !== data?.seeCoffeeShop.shop.photos.length - 1) {
       setPhotoIndex((current) => current + 1);
-      setPhotoStage('right');
     } else {
       setPhotoIndex(0);
-      setPhotoStage('right');
     }
   };
 
@@ -540,7 +534,12 @@ function ShopInfo() {
       {message === '' && !loading ? (
         <InfoBox>
           <HeaderBox>
-            <FontAwesomeIcon icon={faDeleteLeft} color="#1F2937" size="3x" />
+            <FontAwesomeIcon
+              onClick={() => navigate(-1)}
+              icon={faDeleteLeft}
+              color="#1F2937"
+              size="3x"
+            />
             {isMe ? (
               <Buttons isMe={isMe}>
                 <Link to={`/edit/${id}`} reloadDocument>
