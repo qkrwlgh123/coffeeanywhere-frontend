@@ -184,6 +184,7 @@ const DescriptionBox = styled.div`
   font-size: 20px;
   font-weight: 400;
   margin: 50px 0px 100px 0px;
+  line-height: 35px;
 `;
 
 const PhotoWrapper = styled.div`
