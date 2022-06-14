@@ -11,6 +11,7 @@ import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
 import ShopForPublic from '../components/shop/ShopForPublic';
 import { Layout } from './PublicList';
 import PublicListLayout from '../components/shop/PublicListLayout';
+import { ListBox } from './MyLikeList';
 
 const Shop = styled.div`
   display: flex;
@@ -120,7 +121,9 @@ function MyShops() {
           ))}
         </Layout>
       ) : (
-        <span>새 게시물을 작성해보세요!</span>
+        <ListBox>
+          <span>새 게시물을 작성해보세요!</span>
+        </ListBox>
       )}
     </PublicListLayout>
   );

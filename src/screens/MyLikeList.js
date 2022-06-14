@@ -12,7 +12,7 @@ import ShopForPublic from '../components/shop/ShopForPublic';
 import { Layout } from './PublicList';
 import PublicListLayout from '../components/shop/PublicListLayout';
 
-const ListBox = styled.div`
+export const ListBox = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
