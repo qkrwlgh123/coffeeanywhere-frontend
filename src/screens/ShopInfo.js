@@ -356,6 +356,7 @@ const SHOP_QUERY = gql`
           like
         }
         isLike
+        isMe
         createdAt
         updatedAt
       }
@@ -401,13 +402,11 @@ const DELETE_LIKE = gql`
 
 function ShopInfo() {
   const isLogged = useReactiveVar(isLoggedInvar);
-  const userName = localStorage.getItem('name');
   const [isLike, setIsLike] = useState(null);
   const [likeMessage, setLikeMessage] = useState('');
   const [reply, setReply] = useState('');
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isMe, setIsMe] = useState(null);
   const [message, setMessage] = useState('');
   const [photoIndex, setPhotoIndex] = useState(0);
 
@@ -437,7 +436,6 @@ function ShopInfo() {
       },
     },
     onCompleted: () => {
-      setIsMe(data?.seeCoffeeShop?.shop?.user?.username === userName);
       setIsLike(data?.seeCoffeeShop?.shop?.isLike);
       MapScript(data?.seeCoffeeShop.shop);
     },
@@ -541,8 +539,8 @@ function ShopInfo() {
               color="#1F2937"
               size="3x"
             />
-            {isMe ? (
-              <Buttons isMe={isMe}>
+            {data?.seeCoffeeShop.shop.isMe ? (
+              <Buttons isMe={data?.seeCoffeeShop.shop.isMe}>
                 <Link to={`/edit/${id}`} reloadDocument>
                   <span disabled={message !== ''}>편집</span>
                 </Link>
@@ -573,7 +571,7 @@ function ShopInfo() {
               showArrows={false}
             >
               {data?.seeCoffeeShop.shop.photos.map((item) => (
-                <PhotoSelectedBox>
+                <PhotoSelectedBox key={item.url}>
                   <Photoimg src={item.url} />
                 </PhotoSelectedBox>
               ))}
