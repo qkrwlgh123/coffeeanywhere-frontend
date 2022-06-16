@@ -540,7 +540,7 @@ function ShopInfo() {
               size="3x"
             />
             {data?.seeCoffeeShop.shop.isMe ? (
-              <Buttons isMe={data?.seeCoffeeShop.shop.isMe}>
+              <Buttons>
                 <Link to={`/edit/${id}`} reloadDocument>
                   <span disabled={message !== ''}>편집</span>
                 </Link>

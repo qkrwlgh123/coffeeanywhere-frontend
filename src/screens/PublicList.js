@@ -1,19 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import ShopForPublic from '../components/shop/ShopForPublic';
-import { Link } from 'react-router-dom';
 import PublicListLayout from '../components/shop/PublicListLayout';
 import PageTitle from '../components/PageTitle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCheck,
-  faFire,
-  faMagnifyingGlass,
-} from '@fortawesome/free-solid-svg-icons';
-import { faCalendarMinus } from '@fortawesome/free-regular-svg-icons';
+import { faCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
+import { ListBox } from './MyLikeList';
 
 const MainImgBox = styled.div`
   display: flex;
@@ -278,11 +273,15 @@ function PublicList() {
         <FontAwesomeIcon icon={faCheck} size="2x" color="#2ECC71" />
         <SearchMessage>상호명과 태그를 기반으로 검색합니다.</SearchMessage>
       </SearchMessageBox>
-      <Layout>
-        {data?.seeCoffeeShops?.map((item) => (
-          <ShopForPublic key={item.id} {...item} />
-        ))}
-      </Layout>
+      {loading ? (
+        <ListBox>목록을 로딩중입니다.</ListBox>
+      ) : (
+        <Layout>
+          {data?.seeCoffeeShops?.map((item) => (
+            <ShopForPublic key={item.id} {...item} />
+          ))}
+        </Layout>
+      )}
     </PublicListLayout>
   );
 }
