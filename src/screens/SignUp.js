@@ -243,7 +243,7 @@ function SignUp() {
           />
           <FormError message={errors?.username?.message} />
           <InputDescribeBox>
-            Cafe anywhere에서 사용할 이름입니다.
+            Coffee anywhere에서 사용할 이름입니다.
           </InputDescribeBox>
           <AuthInput
             ref={register({
