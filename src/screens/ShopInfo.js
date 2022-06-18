@@ -594,7 +594,7 @@ function ShopInfo() {
       },
     });
   };
-  console.log(data);
+
   return (
     <ShopInfoLayout>
       <PageTitle title={`${data?.seeCoffeeShop?.shop?.name}`} />
@@ -755,7 +755,6 @@ function ShopInfo() {
                             icon={faPencil}
                             onClick={() => {
                               setEditStatus([true, item.id]);
-                              setEditContent(item.content);
                             }}
                           />
                           <FontAwesomeIcon
@@ -770,7 +769,7 @@ function ShopInfo() {
                     <ReplyInputBox>
                       <ReplyInput
                         type="text"
-                        defaultValue={editContent}
+                        defaultValue={item.content}
                         onChange={(event) => {
                           setEditContent(event.target.value);
                         }}
