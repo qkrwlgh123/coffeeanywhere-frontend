@@ -5,6 +5,8 @@ import {
   faDeleteLeft,
   faAngleLeft,
   faAngleRight,
+  faX,
+  faPencil,
 } from '@fortawesome/free-solid-svg-icons'; // ♥︎
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
@@ -293,7 +295,9 @@ const ReplyInfo = styled.div`
 
 const InfoText = styled.div`
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
   margin-left: 20px;
 `;
 
@@ -305,6 +309,13 @@ const ReplyDate = styled.div`
   font-size: 14px;
   color: #9ca3af;
   margin-top: 5px;
+`;
+
+const ReplyControlBox = styled.div`
+  svg {
+    cursor: pointer;
+    margin-right: 10px;
+  }
 `;
 
 const ReplyContent = styled.div`
@@ -350,6 +361,9 @@ const SHOP_QUERY = gql`
             username
             avatar
           }
+          isMe
+          createdAt
+          updatedAt
         }
 
         likes {
@@ -382,6 +396,24 @@ const ADD_REPLY = gql`
   }
 `;
 
+const EDIT_REPLY = gql`
+  mutation editReply($id: Int, $content: String) {
+    editReply(id: $id, content: $content) {
+      ok
+      error
+    }
+  }
+`;
+
+const DELETE_REPLY = gql`
+  mutation deleteReply($id: Int) {
+    deleteReply(id: $id) {
+      ok
+      error
+    }
+  }
+`;
+
 const ADD_LIKE = gql`
   mutation addLike($id: Int, $like: Boolean) {
     addLike(id: $id, like: $like) {
@@ -405,6 +437,8 @@ function ShopInfo() {
   const [isLike, setIsLike] = useState(null);
   const [likeMessage, setLikeMessage] = useState('');
   const [reply, setReply] = useState('');
+  const [editStatus, setEditStatus] = useState([false, '']);
+  const [editContent, setEditContent] = useState('');
   const { id } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
@@ -503,6 +537,40 @@ function ShopInfo() {
     },
   });
 
+  const [editReply] = useMutation(EDIT_REPLY, {
+    onCompleted: () => {
+      setReply('');
+      refetch();
+    },
+  });
+
+  const handleEditReply = () => {
+    editReply({
+      variables: {
+        id: editStatus[1],
+        content: editContent,
+      },
+      onCompleted: () => {
+        setEditStatus([false, null]);
+        refetch();
+      },
+    });
+  };
+
+  const [deleteReply] = useMutation(DELETE_REPLY, {
+    onCompleted: () => {
+      refetch();
+    },
+  });
+
+  const handleDeleteReply = (id) => {
+    deleteReply({
+      variables: {
+        id,
+      },
+    });
+  };
+
   const handleDeleteShop = () => {
     if (loading) {
       return;
@@ -526,7 +594,7 @@ function ShopInfo() {
       },
     });
   };
-
+  console.log(data);
   return (
     <ShopInfoLayout>
       <PageTitle title={`${data?.seeCoffeeShop?.shop?.name}`} />
@@ -653,19 +721,69 @@ function ShopInfo() {
                   <ReplyInfo>
                     <Avatar url={item.user.avatar} />
                     <InfoText>
-                      <ReplyOwner>{item.user.username}</ReplyOwner>
-                      <ReplyDate>
-                        {new Intl.DateTimeFormat('ko-KR', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        }).format(item.createdAt)}
-                      </ReplyDate>
+                      <div>
+                        <ReplyOwner>{item.user.username}</ReplyOwner>
+                        <ReplyDate>
+                          {item.updatedAt === item.createdAt ? (
+                            <div>
+                              {new Intl.DateTimeFormat('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }).format(item.createdAt)}
+                              <span> 작성</span>
+                            </div>
+                          ) : (
+                            <div>
+                              {new Intl.DateTimeFormat('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }).format(item.updatedAt)}
+                              <span> 수정</span>
+                            </div>
+                          )}
+                        </ReplyDate>
+                      </div>
+                      {item.isMe ? (
+                        <ReplyControlBox>
+                          <FontAwesomeIcon
+                            icon={faPencil}
+                            onClick={() => {
+                              setEditStatus([true, item.id]);
+                              setEditContent(item.content);
+                            }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faX}
+                            onClick={() => handleDeleteReply(item.id)}
+                          />
+                        </ReplyControlBox>
+                      ) : null}
                     </InfoText>
                   </ReplyInfo>
-                  <ReplyContent>{item.content}</ReplyContent>
+                  {editStatus[0] && editStatus[1] === item.id ? (
+                    <ReplyInputBox>
+                      <ReplyInput
+                        type="text"
+                        defaultValue={editContent}
+                        onChange={(event) => {
+                          setEditContent(event.target.value);
+                        }}
+                      />
+                      <ReplyBtn
+                        disabled={editContent.length < 2}
+                        onClick={handleEditReply}
+                        value="댓글 수정"
+                      />
+                    </ReplyInputBox>
+                  ) : (
+                    <ReplyContent>{item.content}</ReplyContent>
+                  )}
                 </Reply>
               ))
             ) : (
