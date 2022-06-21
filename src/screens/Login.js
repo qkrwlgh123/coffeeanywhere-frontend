@@ -11,7 +11,7 @@ import routes from '../routes';
 import PageTitle from '../components/PageTitle';
 import { useForm } from 'react-hook-form';
 import { ErrorBox, Title } from '../components/shared';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Notification from '../components/auth/Notification';
 import FormError from '../components/auth/FormError';
 import { gql, useMutation } from '@apollo/client';
@@ -22,6 +22,13 @@ import { AuthInput } from './SignUp';
 
 const TitleBox = styled.div`
   margin-bottom: 50px;
+`;
+
+const KakaoBtn = styled.a`
+  width: 50%;
+  text-align: center;
+  background-color: yellow;
+  color: black;
 `;
 
 const LOGIN_MUTATION = gql`
@@ -124,6 +131,7 @@ function Login() {
             value={loading ? 'Loading..' : '로그인'}
             disabled={!formState.isValid || loading}
           />
+          <KakaoBtn>카카오 계정으로 로그인</KakaoBtn>
         </form>
         <Separator />
       </FormBox>
