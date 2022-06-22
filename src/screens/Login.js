@@ -19,16 +19,21 @@ import { loggedId, logUserIn } from '../apollo';
 import { useState } from 'react';
 import ProfileInfoLayout from '../components/shop/ProfileInfoLayout';
 import { AuthInput } from './SignUp';
+import kakao_login_img from '../../src/images/kakao_login_medium_narrow.png';
+
+window.Kakao.init(process.env.REACT_APP_KAKAO);
 
 const TitleBox = styled.div`
   margin-bottom: 50px;
 `;
 
-const KakaoBtn = styled.a`
-  width: 50%;
+const KakaoBtn = styled.img`
+  width: 200px;
+  height: 50px;
   text-align: center;
   background-color: yellow;
   color: black;
+  cursor: pointer;
 `;
 
 const LOGIN_MUTATION = gql`
@@ -42,7 +47,51 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
+const KAKAO_LOGIN_MUTATION = gql`
+  mutation kakaoLogin($username: String, $avatar: String, $email: String) {
+    kakaoLogin(username: $username, avatar: $avatar, email: $email) {
+      ok
+      token
+      error
+    }
+  }
+`;
+
 function Login() {
+  const handleKakaoLogin = () => {
+    window.Kakao.Auth.login({
+      success: function (response) {
+        window.Kakao.API.request({
+          url: '/v2/user/me',
+          success: function (response) {
+            kakaoLogin({
+              variables: {
+                username: response.properties.nickname,
+                email: response.kakao_account.email,
+                avatar: response.properties.profile_image,
+              },
+              onCompleted: (data) => {
+                console.log('완료', data);
+                const {
+                  kakaoLogin: { ok, token, error },
+                } = data;
+                if (token) {
+                  logUserIn(token);
+                }
+              },
+            });
+          },
+          fail: function (error) {
+            console.log(error);
+          },
+        });
+      },
+      fail: function (error) {
+        console.log(error);
+      },
+    });
+  };
+
   const [errorMessage, setErrorMessage] = useState('');
 
   const location = useLocation();
@@ -77,6 +126,8 @@ function Login() {
     }
   };
   const [login, { loading }] = useMutation(LOGIN_MUTATION, { onCompleted });
+  const [kakaoLogin, {}] = useMutation(KAKAO_LOGIN_MUTATION);
+
   const onSubmitValid = (data) => {
     if (loading) {
       return;
@@ -131,7 +182,7 @@ function Login() {
             value={loading ? 'Loading..' : '로그인'}
             disabled={!formState.isValid || loading}
           />
-          <KakaoBtn>카카오 계정으로 로그인</KakaoBtn>
+          <KakaoBtn src={kakao_login_img} onClick={handleKakaoLogin} />
         </form>
         <Separator />
       </FormBox>

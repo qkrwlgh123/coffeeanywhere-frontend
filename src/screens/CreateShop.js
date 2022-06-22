@@ -20,7 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { DeleteHashtagBox, HashtagBox, Message } from './ShopInfo';
 
-import radioImg from '../radioImg.png';
+import radioImg from '../images/radioImg.png';
 
 const { kakao } = window;
 

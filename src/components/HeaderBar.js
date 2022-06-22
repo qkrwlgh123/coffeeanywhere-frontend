@@ -74,7 +74,7 @@ const ModalBox = styled.div`
   right: 1px;
   padding: 24px;
   width: 220px;
-  height: 220px;
+  height: ${(props) => (props.isKaKao ? '180px' : '220px')};
   display: ${(props) => (props.activeModal ? 'flex' : 'none')};
   flex-direction: column;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px;
@@ -96,6 +96,7 @@ const INFO_QUERY = gql`
   query seeProfile {
     seeProfile {
       avatar
+      isKaKao
     }
   }
 `;
@@ -157,14 +158,20 @@ function HeaderBar() {
             >
               <Avatar url={data?.seeProfile?.avatar} />
               <FontAwesomeIcon icon={faEllipsisVertical} />
-              <ModalBox activeModal={activeModal} ref={el}>
+              <ModalBox
+                isKaKao={data?.seeProfile.isKaKao}
+                activeModal={activeModal}
+                ref={el}
+              >
                 <Button onClick={() => navigate(routes.myList)}>내 목록</Button>
                 <Button onClick={() => navigate(routes.myLikeList)}>
                   관심 목록
                 </Button>
-                <Button onClick={() => navigate(routes.editProfile)}>
-                  프로필 수정
-                </Button>
+                {data?.seeProfile.isKaKao ? null : (
+                  <Button onClick={() => navigate(routes.editProfile)}>
+                    프로필 수정
+                  </Button>
+                )}
                 <Button
                   onClick={() => {
                     logUserOut();

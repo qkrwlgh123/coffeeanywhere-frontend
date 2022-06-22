@@ -18,7 +18,7 @@ import {
   UploadBox,
   UploadPhotoBox,
 } from './CreateShop';
-import radioImg from '../radioImg.png';
+import radioImg from '../images/radioImg.png';
 import { Open, OpenBox } from './CreateShop';
 import CreateLayout from '../components/shop/CreateLayout';
 import { useForm } from 'react-hook-form';

@@ -83,6 +83,7 @@ const INFO_QUERY = gql`
         avatar
         description
         email
+        isKaKao
       }
     }
   }
