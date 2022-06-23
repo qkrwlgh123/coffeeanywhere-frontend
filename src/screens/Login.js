@@ -71,7 +71,6 @@ function Login() {
                 avatar: response.properties.profile_image,
               },
               onCompleted: (data) => {
-                console.log('완료', data);
                 const {
                   kakaoLogin: { ok, token, error },
                 } = data;
@@ -81,9 +80,7 @@ function Login() {
               },
             });
           },
-          fail: function (error) {
-            console.log(error);
-          },
+          fail: function (error) {},
         });
       },
       fail: function (error) {

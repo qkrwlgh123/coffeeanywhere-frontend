@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { gql, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import ShopForPublic from '../components/shop/ShopForPublic';
@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { ListBox } from './MyLikeList';
+import homeImg from '../../src/images/home_logo.png';
 
 const MainImgBox = styled.div`
   display: flex;
@@ -113,6 +114,20 @@ const AnimationImgBox = styled.div`
   align-items: center;
   width: 50%;
   height: 520px;
+`;
+
+const movingImg = keyframes`
+  from {
+    transform: translate(0, -10px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+`;
+
+const AnimationImg = styled.img`
+  width: 550px;
+  animation: ${movingImg} 1.5s 1s infinite ease-in-out alternate;
 `;
 
 export const Layout = styled.div`
@@ -246,7 +261,9 @@ function PublicList() {
           <Title>커피 Anywhere</Title>
           <Subtitle>전국에 있는 사용자들과 카페 정보를 공유해보세요.</Subtitle>
         </TextsBox>
-        <AnimationImgBox>둥둥 그림</AnimationImgBox>
+        <AnimationImgBox>
+          <AnimationImg src={homeImg} />
+        </AnimationImgBox>
       </MainImgBox>
       <SearchBar>
         <SearchBox>
