@@ -79,20 +79,20 @@ Infinite Scroll을 이용한 게시물 목록 조회 기능
 <img src="https://user-images.githubusercontent.com/85853566/176069949-026482f0-0487-4faf-a28e-f98c29217bf6.gif" width="800" height="500"/>
 <img src="https://user-images.githubusercontent.com/85853566/176070334-0bfd0604-c291-41d1-8cd7-bbfad4837536.png" width="800" height="700"/>
 <br/>
-카카오 지도 API를 이용한 장소 검색어 자동 완성, 게시물 정보 작성 및 등록
+카카오 지도 API를 이용한 장소 검색어 자동 완성, 게시물 정보 작성 및 등록
 
 ### 7. 내 목록 (My List)
 
 <img src="https://user-images.githubusercontent.com/85853566/176072333-505a03a7-4dd8-4dc6-8c6f-fc0bb33c7190.gif" width="800" height="500"/>
 <br/>
-등록한 게시물 목록 조회 기능
+등록한 게시물 목록 조회 기능
 
 ### 8. 게시물 편집 및 삭제 (Edit Post, Delete)
 
 <img src="https://user-images.githubusercontent.com/85853566/176073350-b5af853f-171e-4eec-9295-f86d81578466.png" width="1000" height="500"/>
 <img src="https://user-images.githubusercontent.com/85853566/176073380-b1691b6e-10b2-4e4a-9159-744df2f29a8a.png" width="800" height="700"/>
 <br/>
-등록한 게시물 정보 편집 및 삭제 기능
+등록한 게시물 정보 편집 및 삭제 기능
 
 ### 9. 좋아요 등록 (Like)
 
