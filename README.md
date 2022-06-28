@@ -54,11 +54,17 @@ Coffee anywhere는 전국의 사용자들이 다녀왔던 카페 정보를 서�
 <br/>
 Kakao API를 이용한 소셜 로그인 또는 등록된 정보를 이용한 로그인
 
+### 3. 게시물 목록 조회(Post List)
+
+<img src="https://user-images.githubusercontent.com/85853566/176068230-9ca35c4e-b201-40e5-93ca-46dd3d73e397.gif" width="1000" height="500"/>
+<br/>
+Infinite Scroll을 이용한 게시물 목록 조회 기능
+
 ### 4. 게시물 상세 정보 조회 (Post Details)
 
-<img src="https://user-images.githubusercontent.com/85853566/175863878-b0a65fff-9544-4e11-b955-0397a50142b7.gif" width="800" height="500"/>
-<img src="https://user-images.githubusercontent.com/85853566/175864275-4ae8debe-83cc-4f8d-ac76-fdb63478beb0.png" width="800" height="500"/>
-<img src="https://user-images.githubusercontent.com/85853566/175864287-1550b97d-e757-4a11-9b6e-3212ce5a2396.png" width="800" height="500"/>
+<img src="https://user-images.githubusercontent.com/85853566/175863878-b0a65fff-9544-4e11-b955-0397a50142b7.gif" width="1000" height="500"/>
+<img src="https://user-images.githubusercontent.com/85853566/175864275-4ae8debe-83cc-4f8d-ac76-fdb63478beb0.png" width="1000" height="700"/>
+<img src="https://user-images.githubusercontent.com/85853566/175864287-1550b97d-e757-4a11-9b6e-3212ce5a2396.png" width="1000" height="500"/>
 <br/>
 게시물 사진 목록 Carousel 구성, Kakao 지도 API를 이용한 위치 및 댓글 확인
 
@@ -67,3 +73,43 @@ Kakao API를 이용한 소셜 로그인 또는 등록된 정보를 이용한 로
 <img src="https://user-images.githubusercontent.com/85853566/175865447-67965e02-5c72-42c0-a352-6b6a4640c4e4.gif" width="800" height="500"/>
 <br/>
 다른 사용자의 프로필 및 보유 게시물 조회 기능
+
+### 6. 게시물 등록 (Post)
+
+<img src="https://user-images.githubusercontent.com/85853566/176069949-026482f0-0487-4faf-a28e-f98c29217bf6.gif" width="800" height="500"/>
+<img src="https://user-images.githubusercontent.com/85853566/176070334-0bfd0604-c291-41d1-8cd7-bbfad4837536.png" width="800" height="700"/>
+<br/>
+카카오 지도 API를 이용한 장소 검색어 자동 완성, 게시물 정보 작성 및 등록
+
+### 7. 내 목록 (My List)
+
+<img src="https://user-images.githubusercontent.com/85853566/176072333-505a03a7-4dd8-4dc6-8c6f-fc0bb33c7190.gif" width="800" height="500"/>
+<br/>
+등록한 게시물 목록 조회 기능
+
+### 8. 게시물 편집 및 삭제 (Edit Post, Delete)
+
+<img src="https://user-images.githubusercontent.com/85853566/176073350-b5af853f-171e-4eec-9295-f86d81578466.png" width="1000" height="500"/>
+<img src="https://user-images.githubusercontent.com/85853566/176073380-b1691b6e-10b2-4e4a-9159-744df2f29a8a.png" width="800" height="700"/>
+<br/>
+등록한 게시물 정보 편집 및 삭제 기능
+
+### 9. 좋아요 등록 (Like)
+
+<img src="https://user-images.githubusercontent.com/85853566/176075892-06a4d053-f9e7-4cf6-8180-a0d4d29351e6.png" width="1000" height="500"/>
+<img src="https://user-images.githubusercontent.com/85853566/176075909-d5a8f0f2-60ab-4567-a051-82ec98a37133.png" width="800" height="500"/>
+<br/>
+관심 가능 게시물 좋아요 등록, 해당 게시물 관심 목록에서 조회 기능
+
+### 10. 댓글 (Reply)
+
+<img src="https://user-images.githubusercontent.com/85853566/176078411-6da0d294-8948-4787-8a0b-d6795b93a8fc.png" width="1000" height="400"/>
+<img src="https://user-images.githubusercontent.com/85853566/176078426-af2df24c-d8a1-40a5-b1a5-53844f5a6eae.png" width="1000" height="400"/>
+<br/>
+등록된 게시물에 댓글 작성, 편집 및 삭제 기능
+
+### 11. 프로필 수정 (Edit Profile)
+
+<img src="https://user-images.githubusercontent.com/85853566/176079477-62d34368-72fc-465a-ba68-4a0a6b424352.png" width="800" height="700"/>
+<br/>
+등록된 게시물에 댓글 작성, 편집 및 삭제 기능
