@@ -3,7 +3,6 @@ import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import PageTitle from '../components/PageTitle';
 import { useState } from 'react';
-
 import { faUser } from '@fortawesome/free-regular-svg-icons'; // ♡
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TOKEN } from '../apollo';
