@@ -112,7 +112,7 @@ Infinite Scroll을 이용한 게시물 목록 조회 기능
 
 <img src="https://user-images.githubusercontent.com/85853566/176079477-62d34368-72fc-465a-ba68-4a0a6b424352.png" width="800" height="700"/>
 <br/>
-사용자 프로필 사진, 닉네임, 비밀번호, 이메일 및 소개글 수정 기능
+사용자 프로필 사진, 닉네임, 비밀번호, 이메일 및 소개글 수정 기능
 
 ## 🔧 Tech Stack
 
