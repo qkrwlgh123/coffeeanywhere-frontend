@@ -30,7 +30,7 @@ Coffee anywhere는 전국의 사용자들이 다녀왔던 카페 정보를 서�
 | 로그인 시 기능         |
 | 7                      | 게시물 등록         | 알고 있는 카페의 정보를 이용한 게시물 작성 및 등록 기능 구현                   |
 | 8                      | 게시물 편집 및 삭제 | 작성한 게시물의 내용 편집 및 삭제 기능 구현                                    |
-| 9                      | 좋아요 등록 및 해제 | 다른 사용자가 등록한 게시물 중, 맘에 드는 게시물 좋아요 등록 및 해제 기능 구현 |
+| 9                      | 좋아요 등록 및 해제 | 다른 사용자가 등록한 게시물 중, 관심 가는 게시물 좋아요 등록 및 해제 기능 구현 |
 | 10                     | 댓글 작성           | 다른 사용자가 등록한 게시물에 댓글 작성 기능 구현                              |
 | 11                     | 댓글 편집 및 삭제   | 작성한 댓글의 내용 편집 및 삭제 기능 구현                                      |
 | 12                     | 관심 목록           | 좋아요를 등록한 게시물 목록 조회 기능 구현                                     |
@@ -99,7 +99,7 @@ Infinite Scroll을 이용한 게시물 목록 조회 기능
 <img src="https://user-images.githubusercontent.com/85853566/176075892-06a4d053-f9e7-4cf6-8180-a0d4d29351e6.png" width="1000" height="500"/>
 <img src="https://user-images.githubusercontent.com/85853566/176075909-d5a8f0f2-60ab-4567-a051-82ec98a37133.png" width="800" height="500"/>
 <br/>
-관심 가능 게시물 좋아요 등록, 해당 게시물 관심 목록에서 조회 기능
+관심 가는 게시물 좋아요 등록, 해당 게시물 관심 목록에서 조회 기능
 
 ### 10. 댓글 (Reply)
 
@@ -112,11 +112,9 @@ Infinite Scroll을 이용한 게시물 목록 조회 기능
 
 <img src="https://user-images.githubusercontent.com/85853566/176079477-62d34368-72fc-465a-ba68-4a0a6b424352.png" width="800" height="700"/>
 <br/>
-등록된 게시물에 댓글 작성, 편집 및 삭제 기능
+사용자 프로필 사진, 닉네임, 비밀번호, 이메일 및 소개글 수정 기능
 
 ## 🔧 Tech Stack
-
-### Tech Stack
 
 ### Frontend <br/>
 
@@ -129,3 +127,31 @@ Infinite Scroll을 이용한 게시물 목록 조회 기능
 ### API <br/>
 
 <img src="https://img.shields.io/badge/kakao-FFCD00?style=for-the-badge&logo=kakao&logoColor=black">
+
+## 🏃 Steps to run
+
+### Frontend
+
+https://github.com/qkrwlgh123/coffeeanywhere-frontend
+
+```
+$ npm install
+$ npm start
+```
+
+### Backend
+
+https://github.com/qkrwlgh123/coffeeanywhere-backend
+
+```
+$ npm install
+$ npm run dev
+```
+
+## 📝 Author & License
+
+박지호 – jiho1024@naver.com
+
+이 프로젝트는 MIT 라이센스를 준수합니다.
+
+This project is licensed under the terms of the MIT license.
