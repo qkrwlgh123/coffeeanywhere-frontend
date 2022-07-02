@@ -303,6 +303,7 @@ const InfoText = styled.div`
 
 const ReplyOwner = styled.span`
   font-size: 18px;
+  cursor: pointer;
 `;
 
 const ReplyDate = styled.div`
@@ -722,7 +723,13 @@ function ShopInfo() {
                     <Avatar url={item.user.avatar} />
                     <InfoText>
                       <div>
-                        <ReplyOwner>{item.user.username}</ReplyOwner>
+                        <ReplyOwner
+                          onClick={() =>
+                            navigate(`/profile/${item.user.username}`)
+                          }
+                        >
+                          {item.user.username}
+                        </ReplyOwner>
                         <ReplyDate>
                           {item.updatedAt === item.createdAt ? (
                             <div>
