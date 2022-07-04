@@ -1,3 +1,7 @@
+#        Coffee Anywhere
+
+![home_logo](https://user-images.githubusercontent.com/85853566/177081574-229663cd-045f-44d9-a838-9b3743915de9.png)
+
 ## ✨ Description
 
 ```
